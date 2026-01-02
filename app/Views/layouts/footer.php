@@ -1,0 +1,1 @@
+<p class="mb-0">GRUPO ES © 2026.</p>
