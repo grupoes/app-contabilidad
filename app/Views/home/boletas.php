@@ -21,7 +21,7 @@
             <input type="hidden" id="rucEmpresa" value="<?= $ruc ?>">
             <h4><?= $empresa ?></h4>
             <div class="row mb-3">
-                <div class="col-md-3">
+                <div class="col-md-3 mb-3">
                     <label for="selectAnio" class="form-label">Año</label>
                     <select class="form-select" id="selectAnio">
                         <option value="0">Todos</option>
@@ -30,7 +30,7 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mb-3">
                     <label for="selectMes" class="form-label">Mes</label>
                     <select class="form-select" id="selectMes">
                         <option value="0">Todos</option>
