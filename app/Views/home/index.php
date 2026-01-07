@@ -15,25 +15,12 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12 col-lg-4 col-xxl-4 d-flex">
-        <div class="card rounded-4 w-100 cursor-pointer">
-            <div class="card-body">
-                <div class="">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <h5 class="mb-0">GRUPO ES CONSULTORES SOCIEDAD ANONIMA</h5>
-                    </div>
-                    <p class="mb-2">20601589651</p>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="">
-                            <p class="mb-3">Jr Colon 566 - Tarapoto - San Martin - San Martin</p>
-                        </div>
-                        <img src="assets/images/apps/store.png" width="100" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="row" id="listEmpresas">
+
 </div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('js') ?>
+<script src="js/home/main.js"></script>
 <?= $this->endSection() ?>

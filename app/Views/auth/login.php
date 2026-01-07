@@ -58,7 +58,7 @@
                             <p class="mb-0">Introduce tus credenciales para iniciar sesión en tu cuenta</p>
 
                             <div class="form-body mt-4">
-                                <form class="row g-3">
+                                <form class="row g-3" id="formLogin">
                                     <div class="col-12">
                                         <label for="username" class="form-label">Usuario</label>
                                         <input type="text" class="form-control" name="username" id="username" placeholder="Ingrese su usuario">
@@ -66,7 +66,7 @@
                                     <div class="col-12">
                                         <label for="inputChoosePassword" class="form-label">Contraseña</label>
                                         <div class="input-group" id="show_hide_password">
-                                            <input type="password" class="form-control" id="inputChoosePassword" value="" placeholder="Ingrese su contraseña">
+                                            <input type="password" class="form-control" id="inputChoosePassword" name="password" value="" placeholder="Ingrese su contraseña">
                                             <a href="javascript:;" class="input-group-text bg-transparent"><i class="bi bi-eye-slash-fill"></i></a>
                                         </div>
                                     </div>
@@ -110,6 +110,8 @@
             });
         });
     </script>
+
+    <script src="js/auth/login.js"></script>
 
 </body>
 

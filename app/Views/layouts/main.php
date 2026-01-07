@@ -9,33 +9,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GRUPO ES</title>
     <!--favicon-->
-    <link rel="icon" href="assets/images/grupoesicon.ico" type="image/x-icon">
+    <link rel="icon" href="<?= base_url() ?>assets/images/grupoesicon.ico" type="image/x-icon">
     <!-- loader-->
-    <link href="assets/css/pace.min.css" rel="stylesheet">
-    <script src="assets/js/pace.min.js"></script>
+    <link href="<?= base_url() ?>assets/css/pace.min.css" rel="stylesheet">
+    <script src="<?= base_url() ?>assets/js/pace.min.js"></script>
 
     <!--plugins-->
-    <link href="assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="assets/plugins/metismenu/metisMenu.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/plugins/metismenu/mm-vertical.css">
-    <link rel="stylesheet" type="text/css" href="assets/plugins/simplebar/css/simplebar.css">
+    <link href="<?= base_url() ?>assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/plugins/metismenu/metisMenu.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/plugins/metismenu/mm-vertical.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url() ?>assets/plugins/simplebar/css/simplebar.css">
     <!--bootstrap css-->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= base_url() ?>assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <?= $this->renderSection('css') ?>
+
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
     <!--main css-->
-    <link href="assets/css/bootstrap-extended.css" rel="stylesheet">
-    <link href="sass/main.css" rel="stylesheet">
-    <link href="sass/dark-theme.css" rel="stylesheet">
-    <link href="sass/blue-theme.css" rel="stylesheet">
-    <link href="sass/semi-dark.css" rel="stylesheet">
-    <link href="sass/bordered-theme.css" rel="stylesheet">
-    <link href="sass/responsive.css" rel="stylesheet">
+    <link href="<?= base_url() ?>assets/css/bootstrap-extended.css" rel="stylesheet">
+    <link href="<?= base_url() ?>sass/main.css" rel="stylesheet">
+    <link href="<?= base_url() ?>sass/dark-theme.css" rel="stylesheet">
+    <link href="<?= base_url() ?>sass/blue-theme.css" rel="stylesheet">
+    <link href="<?= base_url() ?>sass/semi-dark.css" rel="stylesheet">
+    <link href="<?= base_url() ?>sass/bordered-theme.css" rel="stylesheet">
+    <link href="<?= base_url() ?>sass/responsive.css" rel="stylesheet">
 
 </head>
 
 <body>
-
+    <input type="hidden" id="base_url" value="<?= base_url() ?>">
     <!--start header-->
     <header class="top-header">
         <?= $this->include('layouts/header') ?>
@@ -47,7 +50,7 @@
     <aside class="sidebar-wrapper" data-simplebar="true">
         <div class="sidebar-header">
             <div class="logo-icon">
-                <img src="assets/images/logo_light.png" class="logo-img" alt="">
+                <img src="<?= base_url() ?>assets/images/logo_light.png" class="logo-img" alt="">
             </div>
             <div class="logo-name flex-grow-1">
                 <h5 class="mb-0">Grupo Es</h5>
@@ -97,7 +100,7 @@
             <div class="order-list">
                 <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
                     <div class="order-img">
-                        <img src="assets/images/orders/01.png" class="img-fluid rounded-3" width="75" alt="">
+                        <img src="<?= base_url() ?>assets/images/orders/01.png" class="img-fluid rounded-3" width="75" alt="">
                     </div>
                     <div class="order-info flex-grow-1">
                         <h5 class="mb-1 order-title">White Men Shoes</h5>
@@ -111,7 +114,7 @@
 
                 <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
                     <div class="order-img">
-                        <img src="assets/images/orders/02.png" class="img-fluid rounded-3" width="75" alt="">
+                        <img src="<?= base_url() ?>assets/images/orders/02.png" class="img-fluid rounded-3" width="75" alt="">
                     </div>
                     <div class="order-info flex-grow-1">
                         <h5 class="mb-1 order-title">Red Airpods</h5>
@@ -125,7 +128,7 @@
 
                 <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
                     <div class="order-img">
-                        <img src="assets/images/orders/03.png" class="img-fluid rounded-3" width="75" alt="">
+                        <img src="<?= base_url() ?>assets/images/orders/03.png" class="img-fluid rounded-3" width="75" alt="">
                     </div>
                     <div class="order-info flex-grow-1">
                         <h5 class="mb-1 order-title">Men Polo Tshirt</h5>
@@ -139,7 +142,7 @@
 
                 <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
                     <div class="order-img">
-                        <img src="assets/images/orders/04.png" class="img-fluid rounded-3" width="75" alt="">
+                        <img src="<?= base_url() ?>assets/images/orders/04.png" class="img-fluid rounded-3" width="75" alt="">
                     </div>
                     <div class="order-info flex-grow-1">
                         <h5 class="mb-1 order-title">Blue Jeans Casual</h5>
@@ -153,7 +156,7 @@
 
                 <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
                     <div class="order-img">
-                        <img src="assets/images/orders/05.png" class="img-fluid rounded-3" width="75" alt="">
+                        <img src="<?= base_url() ?>assets/images/orders/05.png" class="img-fluid rounded-3" width="75" alt="">
                     </div>
                     <div class="order-info flex-grow-1">
                         <h5 class="mb-1 order-title">Fancy Shirts</h5>
@@ -167,7 +170,7 @@
 
                 <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
                     <div class="order-img">
-                        <img src="assets/images/orders/06.png" class="img-fluid rounded-3" width="75" alt="">
+                        <img src="<?= base_url() ?>assets/images/orders/06.png" class="img-fluid rounded-3" width="75" alt="">
                     </div>
                     <div class="order-info flex-grow-1">
                         <h5 class="mb-1 order-title">Home Sofa Set </h5>
@@ -181,7 +184,7 @@
 
                 <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
                     <div class="order-img">
-                        <img src="assets/images/orders/07.png" class="img-fluid rounded-3" width="75" alt="">
+                        <img src="<?= base_url() ?>assets/images/orders/07.png" class="img-fluid rounded-3" width="75" alt="">
                     </div>
                     <div class="order-info flex-grow-1">
                         <h5 class="mb-1 order-title">Black iPhone</h5>
@@ -195,7 +198,7 @@
 
                 <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
                     <div class="order-img">
-                        <img src="assets/images/orders/08.png" class="img-fluid rounded-3" width="75" alt="">
+                        <img src="<?= base_url() ?>assets/images/orders/08.png" class="img-fluid rounded-3" width="75" alt="">
                     </div>
                     <div class="order-info flex-grow-1">
                         <h5 class="mb-1 order-title">Goldan Watch</h5>
@@ -217,15 +220,18 @@
     <!--end cart-->
 
     <!--bootstrap js-->
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= base_url() ?>assets/js/bootstrap.bundle.min.js"></script>
 
     <!--plugins-->
-    <script src="assets/js/jquery.min.js"></script>
+    <script src="<?= base_url() ?>assets/js/jquery.min.js"></script>
     <!--plugins-->
-    <script src="assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
-    <script src="assets/plugins/metismenu/metisMenu.min.js"></script>
-    <script src="assets/plugins/simplebar/js/simplebar.min.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script src="<?= base_url() ?>assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+    <script src="<?= base_url() ?>assets/plugins/metismenu/metisMenu.min.js"></script>
+
+    <script src="<?= base_url() ?>assets/plugins/simplebar/js/simplebar.min.js"></script>
+    <script src="<?= base_url() ?>assets/js/main.js"></script>
+
+    <?= $this->renderSection('js') ?>
 
 
 </body>
