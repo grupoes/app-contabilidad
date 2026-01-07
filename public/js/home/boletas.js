@@ -4,6 +4,14 @@ const selectMes = document.getElementById("selectMes");
 
 listarBoletas();
 
+selectAnio.addEventListener("change", function () {
+  listarBoletas();
+});
+
+selectMes.addEventListener("change", function () {
+  listarBoletas();
+});
+
 function listarBoletas() {
   const anio = selectAnio.value;
   const mes = selectMes.value;
