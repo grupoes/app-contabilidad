@@ -31,19 +31,9 @@ fileInput.addEventListener("change", function () {
   reader.readAsDataURL(file);
 });
 
-// Botón Guardar (demo)
-/*btnGuardar.addEventListener("click", function () {
-  if (!fileInput.files.length) {
-    alert("Debe seleccionar una imagen primero");
-    return;
-  }
-
-  alert("Imagen lista para enviarse al servidor 🚀");
-});*/
-
 formSelloFirma.addEventListener("submit", function (e) {
   e.preventDefault();
-  const formData = new FormData(this);
+  const formData = new FormData(formSelloFirma);
 
   fetch("/configuracion/uploadSelloFirma", {
     method: "POST",
@@ -68,3 +58,18 @@ formSelloFirma.addEventListener("submit", function (e) {
       alert("Ocurrió un error al subir el sello y firma");
     });
 });
+
+loadImagenSelloFirma();
+
+function loadImagenSelloFirma() {
+  fetch("/configuracion/getSelloFirma")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "success") {
+        previewImage.src = data.link;
+        previewContainer.classList.remove("d-none");
+      } else {
+        previewContainer.classList.add("d-none");
+      }
+    });
+}

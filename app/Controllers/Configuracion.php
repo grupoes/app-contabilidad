@@ -31,57 +31,106 @@ class Configuracion extends BaseController
 
             $token = session()->get('token');
 
-            $response = $client->post($url, [
-                'headers' => [
-                    'Authorization' => "Bearer $token"
+            // Archivo para cURL
+            $cfile = new \CURLFile(
+                $file->getTempName(),
+                $file->getMimeType(),   // image/png, image/jpeg, etc
+                $file->getName()
+            );
+
+            // Datos POST
+            $postData = [
+                'imagen' => $cfile,
+                'ruc'    => session()->get('user')['username']
+            ];
+
+            // Inicializar cURL
+            $ch = curl_init($url);
+
+            curl_setopt_array($ch, [
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => $postData,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HTTPHEADER     => [
+                    "Authorization: Bearer $token"
                 ],
-                'multipart' => [
-                    [
-                        'name'     => 'imagen',
-                        'contents' => fopen($file->getTempName(), 'r'),
-                        'filename' => $file->getName(),
-                        'headers'  => [
-                            'Content-Type' => 'image/png'
-                        ]
-                    ],
-                    [
-                        'name'     => 'ruc',
-                        'contents' => session()->get('user')['username'] // o la variable que uses
-                    ]
-                ],
-                'http_errors' => false
+                CURLOPT_SSL_VERIFYPEER => false, // solo si tu servidor no tiene SSL válido
             ]);
 
-            $result = json_decode($response->getBody(), true);
+            $response = curl_exec($ch);
 
-            if ($result['status'] === true) {
+            // Capturar errores de cURL
+            if ($response === false) {
+                $error = curl_error($ch);
+                curl_close($ch);
+
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Error en cURL: ' . $error
+                ]);
+            }
+
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            // Decodificar respuesta
+            $result = json_decode($response, true);
+
+            if ($httpCode === 200 && isset($result['status']) && $result['status'] === 'success') {
                 return $this->response->setJSON([
                     'status' => 'success',
                     'message' => 'Imagen subida correctamente'
                 ]);
-            } else {
-                $msg = 'Error al subir imagen';
-
-                if (isset($result['message']) && is_string($result['message'])) {
-                    $msg = $result['message'];
-                }
-
-                if (isset($result['errors']) && is_array($result['errors'])) {
-                    // Convertir errores en texto legible
-                    $msg = implode(' | ', $result['errors']);
-                }
-
-                return $this->response->setJSON([
-                    'status' => 'error',
-                    'message' => $msg
-                ]);
             }
+
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => $result['message'] ?? 'Error al subir imagen',
+                'debug'   => $response
+            ]);
         } catch (\Exception $e) {
-            var_dump($e);
-            exit;
             return $this->response->setJSON([
                 'status' => 'error',
                 'message' => 'Error al subir imagen frontend: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function getSelloFirma()
+    {
+        try {
+            $ruc = session()->get('user')['username'];
+
+            $client = \Config\Services::curlrequest();
+
+            $url = getenv('URL_SERVIDOR') . 'get-sello-firma/' . $ruc;
+
+            $response = $client->get($url, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Accept' => 'application/json'
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!$data || empty($data['status'])) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'No se pudo obtener el sello y firma'
+                ]);
+            }
+
+            $url_image = getenv('URL_BASE') . "archivos/sellos/" . $data['filename'];
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'link' => $url_image
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Error al obtener el sello y firma: ' . $e->getMessage()
             ]);
         }
     }

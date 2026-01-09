@@ -16,3 +16,4 @@ $routes->post('/home/listarBoletas', 'Home::listarBoletas');
 
 $routes->get('/sello-firma', 'Configuracion::selloFirma');
 $routes->post('/configuracion/uploadSelloFirma', 'Configuracion::uploadSelloFirma');
+$routes->get('/configuracion/getSelloFirma', 'Configuracion::getSelloFirma');
