@@ -25,8 +25,6 @@ class Configuracion extends BaseController
                 ]);
             }
 
-            $client = \Config\Services::curlrequest();
-
             $url = getenv('URL_SERVIDOR') . "upload-sello-firma";
 
             $token = session()->get('token');
