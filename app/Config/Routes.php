@@ -13,3 +13,6 @@ $routes->get('/home', 'Home::index');
 $routes->get('/empresas', 'Home::empresas');
 $routes->get('/empresa/boletas/(:any)', 'Home::listaBoletas/$1');
 $routes->post('/home/listarBoletas', 'Home::listarBoletas');
+
+$routes->get('/sello-firma', 'Configuracion::selloFirma');
+$routes->post('/configuracion/uploadSelloFirma', 'Configuracion::uploadSelloFirma');

@@ -2,10 +2,8 @@
     <div class="btn-toggle">
         <a href="javascript:;"><i class="material-icons-outlined">menu</i></a>
     </div>
-    <div class="search-bar flex-grow-1">
-        <div class="position-relative">
-
-        </div>
+    <div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; min-width: 0;overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+        <h5><?= session()->get('nombre') ?></h5>
     </div>
     <ul class="navbar-nav gap-1 nav-right-links align-items-center">
 

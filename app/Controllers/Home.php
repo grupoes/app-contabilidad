@@ -10,7 +10,13 @@ class Home extends BaseController
             return redirect()->to(base_url('/'));
         }
 
-        return view('home/index');
+        $role = session()->get('user')['role'];
+
+        if ($role === 'trabajador') {
+            return view('home/index');
+        }
+
+        return view('home/contribuyente');
     }
 
     public function empresas()

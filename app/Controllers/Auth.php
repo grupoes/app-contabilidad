@@ -46,6 +46,7 @@ class Auth extends BaseController
                 'token' => $result['token'],
                 'user' => $result['user'],
                 'nombre' => $result['user']['nombre'],
+                'role' => $result['user']['role'],
                 'primer_nombre' => explode(' ', trim($result['user']['nombre']))[0],
                 'logged_in' => true
             ]);
