@@ -144,4 +144,41 @@ class Home extends BaseController
             'data' => $data['boletas']
         ]);
     }
+
+    public function descargarBoleta($boletaId)
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to(base_url('/'));
+        }
+
+        $usuario = session()->get('user')['username'];
+
+        $client = \Config\Services::curlrequest();
+
+        $url = getenv('URL_SERVIDOR') . 'descargar_boleta';
+
+        $response = $client->post($url, [
+            'headers' => [
+                'Authorization' => "Bearer " . session()->get('token'),
+                'Accept' => 'application/json'
+            ],
+            'json' => [
+                'usuario' => $usuario,
+                'boleta_id' => $boletaId
+            ]
+        ]);
+
+        $data = json_decode($response->getBody(), true);
+
+        if (!$data || empty($data['status']) || empty($data['file_content']) || empty($data['file_name'])) {
+            return redirect()->back()->with('error', 'No se pudo descargar la boleta');
+        }
+
+        $fileContent = base64_decode($data['file_content']);
+        $fileName = $data['file_name'];
+
+        return $this->response->setHeader('Content-Type', 'application/pdf')
+                              ->setHeader('Content-Disposition', 'attachment; filename="' . $fileName . '"')
+                              ->setBody($fileContent);
+    }
 }
