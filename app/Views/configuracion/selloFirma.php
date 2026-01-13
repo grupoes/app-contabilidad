@@ -24,7 +24,7 @@
                 <form id="formSelloFirma" enctype="multipart/form-data">
                     <!-- Input File -->
                     <div class="mb-3">
-                        <input id="fancy-file-upload" type="file" name="imagen" class="form-control" accept=".png, image/png">
+                        <input id="fancy-file-upload" type="file" name="imagen" class="form-control" accept=".png, image/png, .jpeg, image/jpeg, .jpg, image/jpg" />
                     </div>
 
                     <!-- Preview -->
