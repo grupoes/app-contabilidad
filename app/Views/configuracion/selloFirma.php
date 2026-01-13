@@ -17,7 +17,7 @@
 
 <div class="row">
     <div class="col-xl-9 mx-auto mt-3">
-        <h6 class="mb-0 text-uppercase">Subir imágen del sello y firma (.png)</h6>
+        <h6 class="mb-0 text-uppercase">Subir imágen del sello y firma (.png, .jpeg, .jpg)</h6>
         <hr>
         <div class="card">
             <div class="card-body">
