@@ -63,6 +63,7 @@
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-success mt-4">Consultar</button>
+                        <a href="<?= base_url('home') ?>" class="btn btn-danger mt-4">Regresar</a>
                     </div>
                 </div>
             </form>
