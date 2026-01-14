@@ -142,6 +142,7 @@ $(function () {
 });
 
 const base_url = document.getElementById("base_url").value;
+const url_servidor = document.getElementById("url_servidor").value;
 const logoutSystem = document.getElementById("logoutSystem");
 
 logoutSystem.addEventListener("click", function (event) {

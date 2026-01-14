@@ -37,12 +37,12 @@
                     </div>
 
                     <!-- Preview -->
-                    <!--<div id="previewContainer" class="mb-3 d-none text-center">
+                    <div id="previewImgContainer" class="mb-3 d-none text-center">
                         <img id="previewImage" class="img-fluid rounded-3 border" style="max-height: 300px;">
-                    </div>-->
+                    </div>
 
                     <!-- Preview con Canvas -->
-                    <div id="previewContainer" class="mb-3 d-none text-center">
+                    <div id="previewCanvasContainer" class="mb-3 d-none text-center">
                         <canvas id="canvasPreview" class="border rounded-3" style="max-width:100%; max-height:300px;"></canvas>
                     </div>
 
@@ -54,6 +54,7 @@
             </div>
         </div>
     </div>
+
 </div>
 <?= $this->endSection() ?>
 

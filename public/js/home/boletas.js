@@ -48,7 +48,7 @@ function viewBoletas(data) {
                 <div class="card boleta-card shadow-none border mb-0">
                     <div class="card-body text-center">
                         <h6>Boleta de Pago - ${bole.mes_descripcion}</h6>
-                        <a href="http://localhost:8000/api/descargar-boleta/${bole.id}/${bole.ruc}" target="_blank" class="btn btn-sm btn-primary">Descargar PDF</a>
+                        <a href="${url_servidor}api/descargar-boleta/${bole.id}/${bole.ruc}" target="_blank" class="btn btn-sm btn-primary">Descargar PDF</a>
                     </div>
                 </div>
             </div>

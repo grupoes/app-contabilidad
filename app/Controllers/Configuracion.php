@@ -131,4 +131,46 @@ class Configuracion extends BaseController
             ]);
         }
     }
+
+    public function transparenciaImagen()
+    {
+        try {
+            $file = $this->request->getFile('imagen');
+            $rutaOriginal = $file->getTempName();
+            $img = imagecreatefrompng($rutaOriginal);
+            if (!$img) return $this->response->setJSON([
+                'transparencia' => false,
+                'message' => 'sin transparencia'
+            ]);
+
+            $width  = imagesx($img);
+            $height = imagesy($img);
+
+            for ($x = 0; $x < $width; $x += 10) {
+                for ($y = 0; $y < $height; $y += 10) {
+                    $rgba = imagecolorat($img, $x, $y);
+                    $alpha = ($rgba & 0x7F000000) >> 24;
+
+                    if ($alpha > 0) {
+                        imagedestroy($img);
+                        return $this->response->setJSON([
+                            'transparencia' => true,
+                            'message' => 'con transparencia'
+                        ]);
+                    }
+                }
+            }
+
+            imagedestroy($img);
+            return $this->response->setJSON([
+                'transparencia' => false,
+                'message' => 'sin transparencia'
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => "error -> " . $e->getMessage()
+            ]);
+        }
+    }
 }

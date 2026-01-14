@@ -39,6 +39,7 @@
 
 <body>
     <input type="hidden" id="base_url" value="<?= base_url() ?>">
+    <input type="hidden" id="url_servidor" value="<?= getenv('URL_BASE') ?>">
     <!--start header-->
     <header class="top-header">
         <?= $this->include('layouts/header') ?>

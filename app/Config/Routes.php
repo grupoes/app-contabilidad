@@ -18,3 +18,4 @@ $routes->get('/descargar-boleta/(:any)', 'Home::descargarBoleta/$1');
 $routes->get('/sello-firma', 'Configuracion::selloFirma');
 $routes->post('/configuracion/uploadSelloFirma', 'Configuracion::uploadSelloFirma');
 $routes->get('/configuracion/getSelloFirma', 'Configuracion::getSelloFirma');
+$routes->post('/configuracion/transparenciaImagen', 'Configuracion::transparenciaImagen');

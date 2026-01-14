@@ -1,21 +1,24 @@
 const input = document.getElementById("fancy-file-upload");
 const canvas = document.getElementById("canvasPreview");
 const ctx = canvas.getContext("2d");
-const previewContainer = document.getElementById("previewContainer");
+const previewImgContainer = document.getElementById("previewImgContainer");
+const previewCanvasContainer = document.getElementById(
+  "previewCanvasContainer"
+);
 const controlsContainer = document.getElementById("controlsContainer");
 const range = document.getElementById("rangeUmbral");
 const valor = document.getElementById("valorUmbral");
-//const previewImage = document.getElementById("previewImage");
+const previewImage = document.getElementById("previewImage");
 const btnGuardar = document.getElementById("btnGuardar");
-
 const formSelloFirma = document.getElementById("formSelloFirma");
 
 let imagenOriginal = null;
+let tieneTransparencia = false;
 
 // Mostrar valor
 range.addEventListener("input", () => {
   valor.innerText = range.value;
-  if (imagenOriginal) procesarImagen();
+  if (imagenOriginal && !tieneTransparencia) procesarImagen();
 });
 
 // Cargar imagen
@@ -23,6 +26,58 @@ input.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
+  // Ocultar ambos contenedores inicialmente
+  previewImgContainer.classList.add("d-none");
+  previewCanvasContainer.classList.add("d-none");
+  controlsContainer.classList.add("d-none");
+  btnGuardar.disabled = true;
+
+  // 🔒 Validar que sea PNG
+  if (file.type === "image/png") {
+    const formData = new FormData();
+    formData.append("imagen", file);
+
+    fetch("/configuracion/transparenciaImagen", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.transparencia === true) {
+          // Mostrar en <img> para PNG con transparencia
+          tieneTransparencia = true;
+          mostrarImagenSimple(file);
+        } else {
+          // Mostrar en <canvas> para PNG sin transparencia
+          tieneTransparencia = false;
+          procesarConCanvas(file);
+        }
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        tieneTransparencia = false;
+        procesarConCanvas(file);
+      });
+
+    return;
+  }
+
+  // Para otros formatos (JPG, JPEG)
+  tieneTransparencia = false;
+  procesarConCanvas(file);
+});
+
+function mostrarImagenSimple(file) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    previewImage.src = e.target.result;
+    previewImgContainer.classList.remove("d-none");
+    btnGuardar.disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+function procesarConCanvas(file) {
   const img = new Image();
   img.onload = function () {
     canvas.width = img.width;
@@ -31,7 +86,7 @@ input.addEventListener("change", (e) => {
     imagenOriginal = img;
 
     // Mostrar UI
-    previewContainer.classList.remove("d-none");
+    previewCanvasContainer.classList.remove("d-none");
     controlsContainer.classList.remove("d-none");
     btnGuardar.disabled = false;
 
@@ -43,7 +98,7 @@ input.addEventListener("change", (e) => {
     procesarImagen();
   };
   img.src = URL.createObjectURL(file);
-});
+}
 
 // 🧠 Detecta un umbral inicial analizando el fondo
 function detectarUmbral() {
@@ -74,8 +129,10 @@ function detectarUmbral() {
   return Math.min(220, Math.max(100, umbral));
 }
 
-// 🎨 Procesamiento en tiempo real
+// 🎨 Procesamiento en tiempo real (solo para imágenes sin transparencia)
 function procesarImagen() {
+  if (tieneTransparencia) return; // No procesar si ya tiene transparencia
+
   ctx.drawImage(imagenOriginal, 0, 0);
 
   let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -112,8 +169,22 @@ function procesarImagen() {
 
 formSelloFirma.addEventListener("submit", function (e) {
   e.preventDefault();
-  const formData = new FormData(formSelloFirma);
 
+  // Si es imagen con canvas procesada, necesitamos convertirla a blob
+  if (!tieneTransparencia && imagenOriginal) {
+    canvas.toBlob(function (blob) {
+      const formData = new FormData();
+      formData.append("imagen", blob, "sello_firma.png");
+      enviarFormData(formData);
+    }, "image/png");
+  } else {
+    // Para PNG con transparencia o si no hay procesamiento
+    const formData = new FormData(formSelloFirma);
+    enviarFormData(formData);
+  }
+});
+
+function enviarFormData(formData) {
   fetch("/configuracion/uploadSelloFirma", {
     method: "POST",
     body: formData,
@@ -126,8 +197,11 @@ formSelloFirma.addEventListener("submit", function (e) {
         alert("Sello y firma subidos correctamente");
         // Opcional: limpiar el formulario
         formSelloFirma.reset();
-        previewContainer.classList.add("d-none");
+        previewImgContainer.classList.add("d-none");
+        previewCanvasContainer.classList.add("d-none");
+        controlsContainer.classList.add("d-none");
         btnGuardar.disabled = true;
+        imagenOriginal = null;
       } else {
         alert(data.message);
       }
@@ -136,9 +210,7 @@ formSelloFirma.addEventListener("submit", function (e) {
       console.error("Error:", error);
       alert("Ocurrió un error al subir el sello y firma");
     });
-});
-
-//loadImagenSelloFirma();
+}
 
 function loadImagenSelloFirma() {
   fetch("/configuracion/getSelloFirma")
@@ -146,9 +218,12 @@ function loadImagenSelloFirma() {
     .then((data) => {
       if (data.status === "success") {
         previewImage.src = data.link;
-        previewContainer.classList.remove("d-none");
+        previewImgContainer.classList.remove("d-none");
+        btnGuardar.disabled = false;
       } else {
-        previewContainer.classList.add("d-none");
+        previewImgContainer.classList.add("d-none");
       }
     });
 }
+
+loadImagenSelloFirma();
