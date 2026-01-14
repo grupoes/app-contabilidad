@@ -4,6 +4,8 @@ const tableConsulta = document.getElementById("tableConsulta");
 formConsulta.addEventListener("submit", (e) => {
   e.preventDefault();
 
+  tableConsulta.innerHTML = "";
+
   const formData = new FormData(formConsulta);
 
   fetch(`${base_url}consulta-pdt-renta`, {
@@ -12,7 +14,6 @@ formConsulta.addEventListener("submit", (e) => {
   })
     .then((res) => res.json())
     .then((data) => {
-      tableConsulta.innerHTML = "";
       if (data.status === "success") {
         viewPdtRenta(data.data);
       } else {
