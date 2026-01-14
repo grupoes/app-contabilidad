@@ -173,4 +173,40 @@ class Configuracion extends BaseController
             ]);
         }
     }
+
+    public function getAniosAll()
+    {
+        try {
+            $client = \Config\Services::curlrequest();
+
+            $url = getenv('URL_SERVIDOR') . 'anios';
+
+            $response = $client->get($url, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Accept' => 'application/json'
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!$data || empty($data['status'])) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'no se pudo obtener los años'
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'ok',
+                'message' => 'se obtenieron los años correctamente',
+                'data' => $data['anios']
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'no se pudo obtener los años ' . $e->getMessage()
+            ]);
+        }
+    }
 }

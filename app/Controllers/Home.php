@@ -178,7 +178,64 @@ class Home extends BaseController
         $fileName = $data['file_name'];
 
         return $this->response->setHeader('Content-Type', 'application/pdf')
-                              ->setHeader('Content-Disposition', 'attachment; filename="' . $fileName . '"')
-                              ->setBody($fileContent);
+            ->setHeader('Content-Disposition', 'attachment; filename="' . $fileName . '"')
+            ->setBody($fileContent);
+    }
+
+    public function pdtRenta()
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to(base_url('/'));
+        }
+
+        return view('home/pdtRenta');
+    }
+
+    public function consultaPdtRenta()
+    {
+        try {
+            $anio = $this->request->getPost('anio');
+            $mesInicial = $this->request->getPost('mes_inicial');
+            $mesFinal = $this->request->getPost('mes_final');
+
+            $ruc = session()->get('user')['username'];
+
+            $client = \Config\Services::curlrequest();
+
+            $url = getenv('URL_SERVIDOR') . 'consulta-pdt-renta';
+
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'json' => [
+                    'mes_inicial' => $mesInicial,
+                    'ruc' => $ruc,
+                    'anio' => $anio,
+                    'mes_final' => $mesFinal
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!$data || $data['status'] === 'error') {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $data['message']
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'consulta obtenida correctamente',
+                'data' => $data['data']
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'no se pudo obtener la consulta ' . $e->getMessage()
+            ]);
+        }
     }
 }

@@ -19,3 +19,8 @@ $routes->get('/sello-firma', 'Configuracion::selloFirma');
 $routes->post('/configuracion/uploadSelloFirma', 'Configuracion::uploadSelloFirma');
 $routes->get('/configuracion/getSelloFirma', 'Configuracion::getSelloFirma');
 $routes->post('/configuracion/transparenciaImagen', 'Configuracion::transparenciaImagen');
+
+$routes->get('/getAniosAll', 'Configuracion::getAniosAll');
+
+$routes->get('/pdt-renta', 'Home::pdtRenta');
+$routes->post('/consulta-pdt-renta', 'Home::consultaPdtRenta');

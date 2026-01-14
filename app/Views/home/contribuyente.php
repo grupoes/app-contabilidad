@@ -17,7 +17,7 @@
 
 <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
     <div class="col">
-        <div class="card rounded-4 cursor-pointer">
+        <div class="card rounded-4 cursor-pointer" onclick="pdtRenta()">
             <div class="card-body">
                 <div class="d-flex align-items-center gap-3">
                     <div class="wh-48 d-flex bg-success text-success bg-opacity-10 align-items-center justify-content-center rounded-circle">
@@ -25,6 +25,21 @@
                     </div>
                     <div class="">
                         <h4 class="mb-0">PDT RENTA</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card rounded-4 cursor-pointer">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="wh-48 d-flex bg-primary text-primary bg-opacity-10 align-items-center justify-content-center rounded-circle">
+                        <span class="material-icons-outlined">library_books</span>
+                    </div>
+                    <div class="">
+                        <h4 class="mb-0">PDT PLAME</h4>
                     </div>
                 </div>
             </div>
