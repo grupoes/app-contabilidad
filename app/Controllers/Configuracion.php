@@ -84,7 +84,7 @@ class Configuracion extends BaseController
             return $this->response->setJSON([
                 'status'  => 'error',
                 'message' => $result['message'] ?? 'Error al subir imagen',
-                'debug'   => $response
+                'debug'   => $result
             ]);
         } catch (\Exception $e) {
             return $this->response->setJSON([
@@ -105,8 +105,7 @@ class Configuracion extends BaseController
 
             $response = $client->get($url, [
                 'headers' => [
-                    'Authorization' => "Bearer " . session()->get('token'),
-                    'Accept' => 'application/json'
+                    'Authorization' => "Bearer " . session()->get('token')
                 ]
             ]);
 
@@ -128,7 +127,7 @@ class Configuracion extends BaseController
         } catch (\Exception $e) {
             return $this->response->setJSON([
                 'status' => 'error',
-                'message' => 'Error al obtener el sello y firma: ' . $e->getMessage()
+                'message' => 'Error al obtener el sello y firma frontend: ' . $e->getMessage()
             ]);
         }
     }

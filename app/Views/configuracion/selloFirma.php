@@ -27,9 +27,23 @@
                         <input id="fancy-file-upload" type="file" name="imagen" class="form-control" accept=".png, image/png, .jpeg, image/jpeg, .jpg, image/jpg" />
                     </div>
 
+                    <!-- Controles -->
+                    <div id="controlsContainer" class="mb-3 d-none">
+                        <label class="form-label">
+                            Limpieza (Umbral):
+                            <strong><span id="valorUmbral">140</span></strong>
+                        </label>
+                        <input type="range" id="rangeUmbral" min="80" max="220" value="140" class="form-range">
+                    </div>
+
                     <!-- Preview -->
-                    <div id="previewContainer" class="mb-3 d-none text-center">
+                    <!--<div id="previewContainer" class="mb-3 d-none text-center">
                         <img id="previewImage" class="img-fluid rounded-3 border" style="max-height: 300px;">
+                    </div>-->
+
+                    <!-- Preview con Canvas -->
+                    <div id="previewContainer" class="mb-3 d-none text-center">
+                        <canvas id="canvasPreview" class="border rounded-3" style="max-width:100%; max-height:300px;"></canvas>
                     </div>
 
                     <!-- Botones -->
