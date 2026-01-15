@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand align-items-center gap-4">
+<nav class="navbar navbar-expand align-items-center gap-4 sticky-header">
     <div class="btn-toggle">
         <a href="javascript:;"><i class="material-icons-outlined">menu</i></a>
     </div>
