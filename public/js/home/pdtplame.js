@@ -97,7 +97,7 @@ function viewPdtPlame(data) {
             </div>
             <div class="detail-info">
                 <h6 class="fw-bold mb-1">Constancia</h6>
-                <a href="${url_servidor}archivos/pdt/${data.archivo_constancia};" target="_blank" class="mb-0">Ver Archivo</a>
+                <a href="${url_servidor}archivos/pdt/${data.archivo_constancia}" target="_blank" class="mb-0">Ver Archivo</a>
             </div>
         </div>
     </div>
