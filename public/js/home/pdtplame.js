@@ -112,15 +112,15 @@ function viewPdtPlame(data) {
     let htmlBoletas = "";
     boletas.forEach((bol) => {
       htmlBoletas += `
-        <div class="col-md-4 mb-3">
+        <div class="col-md-4 mb-3 container-job">
             <div class="d-flex align-items-start gap-3 border p-3 rounded">
                 <div class="detail-icon fs-2">
                     <i class="bi bi-file-earmark-arrow-down-fill"></i>
                 </div>
-                <div class="detail-info">
+                <div class="detail-info detail-job">
                     <h6 class="fw-bold mb-1 nombre_trabajador">${bol.nombres}</h6>
                     <h6 class="numero_documento">${bol.numero_documento}</h6>
-                    <a href="${url_servidor}api/descargar-boleta/${bol.id}/${bol.ruc}" class="mb-0">Descargar</a>
+                    <a href="${url_servidor}api/descargar-boleta/${bol.id}/${bol.ruc}" class="mb-0" target="_blank">Descargar</a>
                 </div>
             </div>
         </div>
@@ -135,7 +135,7 @@ function viewPdtPlame(data) {
 
     <div class="col-md-12 mb-3">
         <div class="position-relative">
-            <input class="form-control px-5" type="search" placeholder="Buscar por nombre o numero de documento">
+            <input class="form-control px-5" type="search" placeholder="Buscar por nombre o numero de documento" onkeyup="searchJob(event)">
             <span class="material-icons-outlined position-absolute ms-3 translate-middle-y start-0 top-50 fs-5">search</span>
         </div>
     </div>
@@ -156,4 +156,36 @@ function viewPdtPlame(data) {
     `;
 
   tableConsulta.innerHTML = plame;
+}
+
+function searchJob(e) {
+  const filtro = e.target.value.toLowerCase();
+  const items = document.querySelectorAll("#tableConsulta .detail-job");
+
+  if (filtro.length < 3) {
+    items.forEach((item) => {
+      const container = item.closest(".container-job");
+      container.style.display = "";
+    });
+    return;
+  }
+
+  items.forEach((item) => {
+    const nombre = item
+      .querySelector(".nombre_trabajador")
+      .textContent.toLowerCase();
+    const documento = item
+      .querySelector(".numero_documento")
+      .textContent.toLowerCase();
+
+    const container = item.closest(".container-job");
+
+    if (nombre.includes(filtro) || documento.includes(filtro)) {
+      container.style.display = "";
+      console.log(nombre, "si");
+    } else {
+      container.style.display = "none";
+      console.log(nombre, "no");
+    }
+  });
 }
