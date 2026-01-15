@@ -33,10 +33,10 @@ function viewPdtRenta(data) {
         <td>${pdt.mes_descripcion}</td>
         <td> <a href="${url_servidor}archivos/pdt/${
       pdt.nombre_pdt
-    }" target="_blank"> PDT </a> </td>
+    }" target="_blank" class="text-white"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDT</a> </td>
         <td> <a href="${url_servidor}archivos/pdt/${
       pdt.nombre_constancia
-    }" target="_blank"> CONSTANCIA </a> </td>
+    }" target="_blank" class="text-white"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>CONSTANCIA </a> </td>
     </tr>
     `;
   });

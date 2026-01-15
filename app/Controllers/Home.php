@@ -238,4 +238,59 @@ class Home extends BaseController
             ]);
         }
     }
+
+    public function pdtPlame()
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to(base_url('/'));
+        }
+
+        return view('home/pdtPlame');
+    }
+
+    public function consultaPdtPlame()
+    {
+        try {
+            $anio = $this->request->getPost('anio');
+            $mes = $this->request->getPost('mes');
+
+            $ruc = session()->get('user')['username'];
+
+            $client = \Config\Services::curlrequest();
+
+            $url = getenv('URL_SERVIDOR') . 'consulta-pdt-plame';
+
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'json' => [
+                    'mes' => $mes,
+                    'ruc' => $ruc,
+                    'anio' => $anio
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!$data || $data['status'] === 'error') {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $data['message']
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'consulta obtenida correctamente',
+                'data' => $data['data']
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'no se pudo obtener la consulta ' . $e->getMessage()
+            ]);
+        }
+    }
 }

@@ -24,3 +24,6 @@ $routes->get('/getAniosAll', 'Configuracion::getAniosAll');
 
 $routes->get('/pdt-renta', 'Home::pdtRenta');
 $routes->post('/consulta-pdt-renta', 'Home::consultaPdtRenta');
+
+$routes->get('/pdt-plame', 'Home::pdtPlame');
+$routes->post('/consulta-pdt-plame', 'Home::consultaPdtPlame');

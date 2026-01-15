@@ -32,7 +32,7 @@
     </div>
 
     <div class="col">
-        <div class="card rounded-4 cursor-pointer">
+        <div class="card rounded-4 cursor-pointer" onclick="pdtPlame()">
             <div class="card-body">
                 <div class="d-flex align-items-center gap-3">
                     <div class="wh-48 d-flex bg-primary text-primary bg-opacity-10 align-items-center justify-content-center rounded-circle">
