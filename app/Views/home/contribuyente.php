@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div class="col">
+    <div class="col" id="pdtanual" hidden>
         <div class="card rounded-4 cursor-pointer" onclick="pdtAnual()">
             <div class="card-body">
                 <div class="d-flex align-items-center gap-3">

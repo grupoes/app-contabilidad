@@ -302,4 +302,85 @@ class Home extends BaseController
 
         return view('home/pdtAnual');
     }
+
+    public function verificarPdtAnual()
+    {
+        $client = \Config\Services::curlrequest();
+
+        try {
+            $usuario = session()->get('user')['username'];
+
+            $url = getenv('URL_SERVIDOR');
+
+            $response = $client->get($url . 'verificar-pdt-anual/' . $usuario, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Content-Type' => 'application/json',
+                ]
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            if (!$result || $result['status'] == 'error') {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $result['message']
+                ]);
+            }
+
+            return $this->response->setJSON($result);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Error al conectar a la api ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function consultaPdtAnual()
+    {
+        try {
+
+            $anio = $this->request->getPost('anio');
+            $tipoPdt = $this->request->getPost('tipoPdt');
+
+            $ruc = session()->get('user')['username'];
+
+            $client = \Config\Services::curlrequest();
+
+            $url = getenv('URL_SERVIDOR') . 'consulta-pdt-anual';
+
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'json' => [
+                    'anio' => $anio,
+                    'ruc' => $ruc,
+                    'tipoPdt' => $tipoPdt
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!$data || $data['status'] === 'error') {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $data['message']
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'consulta obtenida correctamente',
+                'data' => $data['data']
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'No se pudo conectar con la api ' . $e->getMessage()
+            ]);
+        }
+    }
 }

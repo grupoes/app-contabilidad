@@ -29,6 +29,8 @@ $routes->get('/pdt-plame', 'Home::pdtPlame');
 $routes->post('/consulta-pdt-plame', 'Home::consultaPdtPlame');
 
 $routes->get('/pdt-anual', 'Home::pdtAnual');
+$routes->get('/verificar-pdt-anual', 'Home::verificarPdtAnual');
+$routes->post('/query-pdt-anual', 'Home::consultaPdtAnual');
 
 $routes->get('/perfil', 'Auth::perfil');
 $routes->post('/change-password', 'Auth::changePassword');

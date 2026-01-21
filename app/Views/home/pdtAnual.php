@@ -22,43 +22,11 @@
                     <div class="col-md-3 mb-3">
                         <label for="anio" class="form-label">Año</label>
                         <select id="anio" name="anio" class="form-select" required>
-                            <option selected="">Seleccione...</option>
                         </select>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label for="mes_inicial" class="form-label">Mes Inicial</label>
-                        <select id="mes_inicial" name="mes_inicial" class="form-select" required>
-                            <option selected="">Seleccione...</option>
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <option value="3">Marzo</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Mayo</option>
-                            <option value="6">Junio</option>
-                            <option value="7">Julio</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Setiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="mes_final" class="form-label">Mes Final</label>
-                        <select id="mes_final" name="mes_final" class="form-select" required>
-                            <option selected="">Seleccione...</option>
-                            <option value="1">Enero</option>
-                            <option value="2">Febrero</option>
-                            <option value="3">Marzo</option>
-                            <option value="4">Abril</option>
-                            <option value="5">Mayo</option>
-                            <option value="6">Junio</option>
-                            <option value="7">Julio</option>
-                            <option value="8">Agosto</option>
-                            <option value="9">Setiembre</option>
-                            <option value="10">Octubre</option>
-                            <option value="11">Noviembre</option>
-                            <option value="12">Diciembre</option>
+                        <label for="tipoPdt" class="form-label">Tipo Pdt</label>
+                        <select id="tipoPdt" name="tipoPdt" class="form-select">
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -78,5 +46,5 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
-<script src="<?= base_url() ?>js/home/pdtrenta.js"></script>
+<script src="<?= base_url() ?>js/home/pdtanual.js"></script>
 <?= $this->endSection() ?>
