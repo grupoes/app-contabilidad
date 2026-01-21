@@ -79,4 +79,48 @@ class Auth extends BaseController
 
         return view('auth/perfil');
     }
+
+    public function changePassword()
+    {
+        $currentPassword = $this->request->getPost('currentPassword');
+        $newPassword = $this->request->getPost('NewPassword');
+        $confirmPassword = $this->request->getPost('ConfirmPassword');
+        $usuario = session()->get('user')['username'];
+
+        $client = Services::curlrequest();
+
+        try {
+            $url = getenv('URL_SERVIDOR');
+
+            $response = $client->post($url . 'change-password', [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'currentPassword' => $currentPassword,
+                    'newPassword' => $newPassword,
+                    'confirmPassword' => $confirmPassword,
+                    'usuario' => $usuario
+                ],
+                'timeout' => 10,
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            if (!$result || $result['status'] == 'error') {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $result['message']
+                ]);
+            }
+
+            return $this->response->setJSON($result);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'error al consultar la api ' . $e->getMessage()
+            ]);
+        }
+    }
 }

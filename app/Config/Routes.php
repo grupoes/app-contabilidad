@@ -31,3 +31,4 @@ $routes->post('/consulta-pdt-plame', 'Home::consultaPdtPlame');
 $routes->get('/pdt-anual', 'Home::pdtAnual');
 
 $routes->get('/perfil', 'Auth::perfil');
+$routes->post('/change-password', 'Auth::changePassword');

@@ -15,31 +15,54 @@
     </div>
 </div>
 
-<div class="card rounded-4">
-    <div class="card-body p-4">
-        <div class="position-relative mb-5">
-            <img src="assets/images/gallery/profile-cover.html" class="img-fluid rounded-4 shadow" alt="">
-            <div class="profile-avatar position-absolute top-100 start-50 translate-middle">
-                <img src="assets/images/avatars/01.png" class="img-fluid rounded-circle p-1 bg-grd-danger shadow" width="170" height="170" alt="">
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card rounded-4 border-top border-4 border-primary border-gradient-1">
+            <div class="card-body p-4">
+
+                <div class="profile-info d-flex align-items-center justify-content-between">
+                    <div class="">
+                        <h3><?= session()->get('nombre') ?></h3>
+                        <h6 class="mb-0"><?= session()->get('user')['username'] ?></h6>
+                    </div>
+                </div>
+
+                <div class="d-flex pt-5 align-items-start justify-content-between mb-3">
+                    <div class="">
+                        <h5 class="mb-0 fw-bold">Cambiar contraseña</h5>
+                    </div>
+                </div>
+                <form class="row g-4" id="formPassword">
+                    <div class="col-12">
+                        <label class="form-label" for="currentPassword">Contraseña Actual</label>
+                        <input type="text" class="form-control" id="currentPassword" placeholder="Escribe su contraseña actual" name="currentPassword">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="NewPassword">Nueva Contraseña</label>
+                        <input type="password" class="form-control" id="NewPassword" name="NewPassword" placeholder="Escribe la nueva contraseña">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="ConfirmPassword">Confirmar Contraseña</label>
+                        <input type="password" class="form-control" name="ConfirmPassword" id="ConfirmPassword" placeholder="Confirma la contraseña">
+                    </div>
+
+                    <div class="col-12" id="message_error">
+
+                    </div>
+
+                    <div class="col-12">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-grd-info">Cambiar la Contraseña</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div>
-        <div class="profile-info pt-5 d-flex align-items-center justify-content-between">
-            <div class="">
-                <h3>Jhon Deo</h3>
-                <p class="mb-0">Engineer at BB Agency Industry<br>
-                    New York, United States</p>
-            </div>
-        </div>
-        <div class="kewords d-flex align-items-center gap-3 mt-4 overflow-x-auto">
-            <button type="button" class="btn btn-sm btn-light rounded-5 px-4">UX Research</button>
-            <button type="button" class="btn btn-sm btn-light rounded-5 px-4">CX Strategy</button>
-            <button type="button" class="btn btn-sm btn-light rounded-5 px-4">Management</button>
         </div>
     </div>
-</div>
+</div><!--end row-->
 
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
-<script src="js/home/contribuyente.js"></script>
+<script src="js/auth/perfil.js"></script>
 <?= $this->endSection() ?>
