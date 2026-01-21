@@ -293,4 +293,13 @@ class Home extends BaseController
             ]);
         }
     }
+
+    public function pdtAnual()
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to(base_url('/'));
+        }
+
+        return view('home/pdtAnual');
+    }
 }

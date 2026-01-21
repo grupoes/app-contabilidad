@@ -47,7 +47,7 @@
     </div>
 
     <div class="col">
-        <div class="card rounded-4 cursor-pointer">
+        <div class="card rounded-4 cursor-pointer" onclick="pdtAnual()">
             <div class="card-body">
                 <div class="d-flex align-items-center gap-3">
                     <div class="wh-48 d-flex bg-orange-light text-orange bg-opacity-10 align-items-center justify-content-center rounded-circle">

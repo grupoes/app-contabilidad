@@ -70,4 +70,13 @@ class Auth extends BaseController
         session()->destroy();
         return $this->response->setJSON(['status' => 'success']);
     }
+
+    public function perfil()
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to(base_url('/'));
+        }
+
+        return view('auth/perfil');
+    }
 }

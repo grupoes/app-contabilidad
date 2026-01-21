@@ -27,3 +27,7 @@ $routes->post('/consulta-pdt-renta', 'Home::consultaPdtRenta');
 
 $routes->get('/pdt-plame', 'Home::pdtPlame');
 $routes->post('/consulta-pdt-plame', 'Home::consultaPdtPlame');
+
+$routes->get('/pdt-anual', 'Home::pdtAnual');
+
+$routes->get('/perfil', 'Auth::perfil');
