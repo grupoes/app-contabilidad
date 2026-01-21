@@ -62,6 +62,44 @@
     </div>
 </div>
 
+<div class="col-lg-12 col-xxl-8 d-flex align-items-stretch">
+    <div class="card w-100 rounded-4">
+        <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between mb-3">
+                <div class="">
+                    <h5 class="mb-0">Análisis de Movimientos</h5>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-success">Excel</button>
+                    <select class="form-select w-auto" id="year">
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Periodo</th>
+                            <th>Ventas Gravadas</th>
+                            <th>Ventas No Gravadas</th>
+                            <th>Total Ventas</th>
+                            <th>Compras Gravadas</th>
+                            <th>Compras No Gravadas</th>
+                            <th>Total Compras</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableMovimientos">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>

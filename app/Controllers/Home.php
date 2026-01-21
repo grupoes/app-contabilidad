@@ -383,4 +383,46 @@ class Home extends BaseController
             ]);
         }
     }
+
+    public function obtenerAnalisisMovimientos($anio)
+    {
+        try {
+            $ruc = session()->get('user')['username'];
+
+            $client = \Config\Services::curlrequest();
+
+            $url = getenv('URL_SERVIDOR') . 'consulta-analisis';
+
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'json' => [
+                    'anio' => $anio,
+                    'ruc' => $ruc
+                ]
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!$data || $data['status'] === 'error') {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $data['message']
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'consulta obtenida correctamente',
+                'data' => $data['data']
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'no se pudo conectar a la api ' . $e->getMessage()
+            ]);
+        }
+    }
 }

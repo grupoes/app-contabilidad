@@ -34,3 +34,5 @@ $routes->post('/query-pdt-anual', 'Home::consultaPdtAnual');
 
 $routes->get('/perfil', 'Auth::perfil');
 $routes->post('/change-password', 'Auth::changePassword');
+
+$routes->get('/obtener-analisis-movimientos/(:num)', 'Home::obtenerAnalisisMovimientos/$1');
