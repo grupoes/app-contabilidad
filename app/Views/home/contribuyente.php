@@ -71,7 +71,7 @@
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                    <button type="button" class="btn btn-success">Excel</button>
+                    <button type="button" class="btn btn-success" onclick="descargarExcel()">Excel</button>
                     <select class="form-select w-auto" id="year">
                     </select>
                 </div>
@@ -79,7 +79,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table align-middle">
+                <table class="table align-middle" id="tableAnalisisMovimientos">
                     <thead>
                         <tr>
                             <th>Periodo</th>
@@ -103,5 +103,6 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
-<script src="js/home/contribuyente.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="<?= base_url() ?>js/home/contribuyente.js"></script>
 <?= $this->endSection() ?>

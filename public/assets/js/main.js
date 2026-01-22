@@ -3,9 +3,9 @@ $(function () {
 
   /* scrollar */
 
-  new PerfectScrollbar(".notify-list");
+  //new PerfectScrollbar(".notify-list");
 
-  new PerfectScrollbar(".search-content");
+  //new PerfectScrollbar(".search-content");
 
   // new PerfectScrollbar(".mega-menu-widgets")
 
@@ -22,7 +22,7 @@ $(function () {
           },
           function () {
             $("body").removeClass("sidebar-hovered");
-          }
+          },
         ));
   });
 
@@ -64,7 +64,7 @@ $(function () {
 
   /* email */
 
-  $(".email-toggle-btn").on("click", function () {
+  ($(".email-toggle-btn").on("click", function () {
     $(".email-wrapper").toggleClass("email-toggled");
   }),
     $(".email-toggle-btn-mobile").on("click", function () {
@@ -100,7 +100,7 @@ $(function () {
     }),
     $("#BoderedTheme").on("click", function () {
       $("html").attr("data-bs-theme", "bodered-theme");
-    });
+    }));
 
   /* search control */
 
@@ -135,7 +135,6 @@ $(function () {
           .parent()
           .addClass("mm-active");
       o.is("li");
-
     )
       o = o.parent("").addClass("mm-show").parent("").addClass("mm-active");
   });

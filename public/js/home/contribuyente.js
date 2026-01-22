@@ -110,6 +110,26 @@ function viewMovimientos(datos) {
     total_ventas += parseFloat(mov.total_ventas);
     total_compras += parseFloat(mov.total_compras);
 
+    let compras_gravadas = mov.compras_gravadas_decimal;
+    compras_gravadas = parseFloat(compras_gravadas.replace(/,/g, ""));
+
+    let importe_compras = mov.total_compras_decimal;
+
+    if (compras_gravadas > 0) {
+      let igv = compras_gravadas * 0.18;
+
+      importe_compras = parseFloat(importe_compras.replace(/,/g, ""));
+
+      importe_compras += igv;
+
+      importe_compras = importe_compras.toLocaleString("es-PE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+      total_compras += igv;
+    }
+
     html += `
     <tr>
       <td>${mov.mes_descripcion}</td>
@@ -118,7 +138,7 @@ function viewMovimientos(datos) {
       <td>${mov.total_ventas_decimal}</td>
       <td>${mov.compras_gravadas_decimal}</td>
       <td>${mov.compras_no_gravadas_decimal}</td>
-      <td>${mov.total_compras_decimal}</td>
+      <td>${importe_compras}</td>
     </tr>
     `;
   });
@@ -154,3 +174,14 @@ function viewMovimientos(datos) {
 year.addEventListener("change", () => {
   obtenerMovimientos();
 });
+
+function descargarExcel() {
+  let anio = year.options[year.selectedIndex].text;
+
+  let tabla = document.getElementById("tableAnalisisMovimientos");
+  let wb = XLSX.utils.table_to_book(tabla, {
+    sheet: "Analisis Movimiento " + anio,
+  });
+
+  XLSX.writeFile(wb, "analisis_movimiento_" + anio + ".xlsx");
+}
