@@ -33,12 +33,16 @@ class Auth extends BaseController
                     'password' => $password,
                 ],
                 'timeout' => 10,
+                'http_errors' => false
             ]);
 
             $result = json_decode($response->getBody(), true);
 
-            if (!$result || empty($result['status'])) {
-                return redirect()->back()->with('error', 'Credenciales incorrectas');
+            if (!$result || $result['status'] == false) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $result['message']
+                ]);
             }
 
             // Guardar token en sesión
@@ -60,7 +64,7 @@ class Auth extends BaseController
 
             return $this->response->setJSON([
                 'status' => 'error',
-                'message' => 'Error de conexión al servidor de autenticación'
+                'message' => 'No se pudo conectar a la api del servidor de autenticación ' . $e->getMessage()
             ]);
         }
     }

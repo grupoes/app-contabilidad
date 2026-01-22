@@ -1,5 +1,7 @@
 const formLogin = document.getElementById("formLogin");
 
+const message_error = document.getElementById("message_error");
+
 formLogin.addEventListener("submit", function (event) {
   event.preventDefault();
   const formData = new FormData(formLogin);
@@ -13,7 +15,11 @@ formLogin.addEventListener("submit", function (event) {
       if (data.status === "success") {
         window.location.href = data.redirect;
       } else {
-        alert(data.message || "Error al iniciar sesión");
+        message_error.innerHTML = `
+        <div class="alert alert-danger border-0 bg-danger alert-dismissible fade show">
+          <div class="text-white">${data.message}</div>
+        </div>
+        `;
       }
     })
     .catch((error) => {

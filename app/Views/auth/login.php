@@ -71,6 +71,10 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-12" id="message_error">
+
+                                    </div>
+
                                     <div class="col-12 mt-4">
                                         <div class="d-grid">
                                             <button type="submit" class="btn btn-grd btn-grd-deep-blue px-5">Acceder</button>
