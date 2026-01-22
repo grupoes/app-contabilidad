@@ -1,5 +1,6 @@
 const formConsulta = document.getElementById("formConsulta");
 const tableConsulta = document.getElementById("tableConsulta");
+const numero_doc = document.getElementById("numero_doc");
 
 loadAnios();
 
@@ -58,7 +59,7 @@ function viewPdtPlame(data) {
 
   if (data.archivo_planilla != "") {
     planilla = `
-    <div class="col">
+    <div class="col mb-3">
         <div class="d-flex align-items-start gap-3 border p-3 rounded">
             <div class="detail-icon fs-5">
                 <i class="bi bi-file-earmark-binary-fill"></i>
@@ -74,7 +75,7 @@ function viewPdtPlame(data) {
 
   if (data.archivo_honorarios != "") {
     r12 = `
-    <div class="col">
+    <div class="col mb-3">
         <div class="d-flex align-items-start gap-3 border p-3 rounded">
             <div class="detail-icon fs-5">
                 <i class="bi bi-file-earmark-code"></i>
@@ -90,7 +91,7 @@ function viewPdtPlame(data) {
 
   if (data.archivo_constancia != "") {
     constancia = `
-    <div class="col">
+    <div class="col mb-3">
         <div class="d-flex align-items-start gap-3 border p-3 rounded">
             <div class="detail-icon fs-5">
                 <i class="bi bi-card-text"></i>
@@ -120,7 +121,7 @@ function viewPdtPlame(data) {
                 <div class="detail-info detail-job">
                     <h6 class="fw-bold mb-1 nombre_trabajador">${bol.nombres}</h6>
                     <h6 class="numero_documento">${bol.numero_documento}</h6>
-                    <a href="${url_servidor}api/descargar-boleta/${bol.id}/${bol.ruc}" class="mb-0" target="_blank">Descargar</a>
+                    <a href="${url_servidor}api/descargar-boleta/${bol.id}/${numero_doc.value}" class="mb-0" target="_blank">Descargar</a>
                 </div>
             </div>
         </div>

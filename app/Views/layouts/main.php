@@ -40,6 +40,7 @@
 <body>
     <input type="hidden" id="base_url" value="<?= base_url() ?>">
     <input type="hidden" id="url_servidor" value="<?= getenv('URL_BASE') ?>">
+    <input type="hidden" id="numero_doc" value="<?= session()->get('user')['username'] ?>">
     <!--start header-->
     <header class="top-header">
         <?= $this->include('layouts/header') ?>
