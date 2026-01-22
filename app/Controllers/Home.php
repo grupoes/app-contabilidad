@@ -38,10 +38,18 @@ class Home extends BaseController
                     'Authorization' => "Bearer $token",
                     'Accept' => 'application/json'
                 ],
+                'http_errors' => false,
                 'json' => [
                     'usuario' => $usuario,
                 ]
             ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
 
             $data = json_decode($response->getBody(), true);
 
@@ -124,6 +132,7 @@ class Home extends BaseController
                 'Authorization' => "Bearer " . session()->get('token'),
                 'Accept' => 'application/json'
             ],
+            'http_errors' => false,
             'json' => [
                 'usuario' => $usuario,
                 'ruc' => $ruc,
@@ -131,6 +140,13 @@ class Home extends BaseController
                 'mes' => $mes
             ]
         ]);
+
+        // 👀 SI TOKEN EXPIRÓ
+        if ($response->getStatusCode() === 401) {
+            session()->destroy();
+            return redirect()->to(base_url())->send();
+            exit;
+        }
 
         $data = json_decode($response->getBody(), true);
 
@@ -162,11 +178,19 @@ class Home extends BaseController
                 'Authorization' => "Bearer " . session()->get('token'),
                 'Accept' => 'application/json'
             ],
+            'http_errors' => false,
             'json' => [
                 'usuario' => $usuario,
                 'boleta_id' => $boletaId
             ]
         ]);
+
+        // 👀 SI TOKEN EXPIRÓ
+        if ($response->getStatusCode() === 401) {
+            session()->destroy();
+            return redirect()->to(base_url())->send();
+            exit;
+        }
 
         $data = json_decode($response->getBody(), true);
 
@@ -209,6 +233,7 @@ class Home extends BaseController
                     'Authorization' => "Bearer " . session()->get('token'),
                     'Accept' => 'application/json'
                 ],
+                'http_errors' => false,
                 'json' => [
                     'mes_inicial' => $mesInicial,
                     'ruc' => $ruc,
@@ -216,6 +241,13 @@ class Home extends BaseController
                     'mes_final' => $mesFinal
                 ]
             ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
 
             $data = json_decode($response->getBody(), true);
 
@@ -265,6 +297,7 @@ class Home extends BaseController
                     'Authorization' => "Bearer " . session()->get('token'),
                     'Accept' => 'application/json'
                 ],
+                'http_errors' => false,
                 'json' => [
                     'mes' => $mes,
                     'ruc' => $ruc,
@@ -316,8 +349,16 @@ class Home extends BaseController
                 'headers' => [
                     'Authorization' => "Bearer " . session()->get('token'),
                     'Content-Type' => 'application/json',
-                ]
+                ],
+                'http_errors' => false
             ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
 
             $result = json_decode($response->getBody(), true);
 
@@ -355,12 +396,20 @@ class Home extends BaseController
                     'Authorization' => "Bearer " . session()->get('token'),
                     'Accept' => 'application/json'
                 ],
+                'http_errors' => false,
                 'json' => [
                     'anio' => $anio,
                     'ruc' => $ruc,
                     'tipoPdt' => $tipoPdt
                 ]
             ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
 
             $data = json_decode($response->getBody(), true);
 
@@ -398,11 +447,19 @@ class Home extends BaseController
                     'Authorization' => "Bearer " . session()->get('token'),
                     'Accept' => 'application/json'
                 ],
+                'http_errors' => false,
                 'json' => [
                     'anio' => $anio,
                     'ruc' => $ruc
                 ]
             ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
 
             $data = json_decode($response->getBody(), true);
 

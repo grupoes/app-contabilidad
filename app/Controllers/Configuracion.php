@@ -106,8 +106,16 @@ class Configuracion extends BaseController
             $response = $client->get($url, [
                 'headers' => [
                     'Authorization' => "Bearer " . session()->get('token')
-                ]
+                ],
+                'http_errors' => false
             ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
 
             $data = json_decode($response->getBody(), true);
 
@@ -185,15 +193,23 @@ class Configuracion extends BaseController
                 'headers' => [
                     'Authorization' => "Bearer " . session()->get('token'),
                     'Accept' => 'application/json'
-                ]
+                ],
+                'http_errors' => false,
             ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
 
             $data = json_decode($response->getBody(), true);
 
-            if (!$data || empty($data['status'])) {
+            if (!$data || $data['status'] == false) {
                 return $this->response->setJSON([
                     'status' => 'error',
-                    'message' => 'no se pudo obtener los años'
+                    'message' => $data['message']
                 ]);
             }
 
@@ -205,8 +221,8 @@ class Configuracion extends BaseController
         } catch (\Exception $e) {
             return $this->response->setJSON([
                 'status' => 'error',
-                'message' => 'no se pudo obtener los años ' . $e->getMessage()
-            ]);
+                'message' => 'no se pudo obtener los años frontend ' . $e->getMessage()
+            ], 401);
         }
     }
 }

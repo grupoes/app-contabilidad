@@ -101,6 +101,7 @@ class Auth extends BaseController
                     'Authorization' => "Bearer " . session()->get('token'),
                     'Content-Type' => 'application/json',
                 ],
+                'http_errors' => false,
                 'json' => [
                     'currentPassword' => $currentPassword,
                     'newPassword' => $newPassword,
@@ -109,6 +110,13 @@ class Auth extends BaseController
                 ],
                 'timeout' => 10,
             ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
 
             $result = json_decode($response->getBody(), true);
 
