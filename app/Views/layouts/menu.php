@@ -15,5 +15,12 @@
                 <div class="menu-title">Sello y Firma</div>
             </a>
         </li>
+        <li>
+            <a href="/sello-firma">
+                <div class="parent-icon"><i class="material-icons-outlined">fingerprint</i>
+                </div>
+                <div class="menu-title">Administrador de Archivos</div>
+            </a>
+        </li>
     <?php endif; ?>
 </ul>
