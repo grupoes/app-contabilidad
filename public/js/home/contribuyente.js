@@ -115,7 +115,7 @@ function viewMovimientos(datos) {
 
     let importe_compras = mov.total_compras_decimal;
 
-    if (compras_gravadas > 0) {
+    if (mov.igv == 0) {
       let igv = compras_gravadas * 0.18;
 
       importe_compras = parseFloat(importe_compras.replace(/,/g, ""));
