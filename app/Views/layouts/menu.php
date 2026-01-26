@@ -16,8 +16,8 @@
             </a>
         </li>
         <li>
-            <a href="/sello-firma">
-                <div class="parent-icon"><i class="material-icons-outlined">fingerprint</i>
+            <a href="/administrador-archivos">
+                <div class="parent-icon"><i class="material-icons-outlined">folder</i>
                 </div>
                 <div class="menu-title">Administrador de Archivos</div>
             </a>

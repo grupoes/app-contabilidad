@@ -36,3 +36,6 @@ $routes->get('/perfil', 'Auth::perfil');
 $routes->post('/change-password', 'Auth::changePassword');
 
 $routes->get('/obtener-analisis-movimientos/(:num)', 'Home::obtenerAnalisisMovimientos/$1');
+
+$routes->get('/administrador-archivos', 'FileManager::index');
+$routes->get('/folders', 'FileManager::listMonthsFolders');
