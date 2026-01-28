@@ -15,10 +15,11 @@
     </div>
 </div>
 
+<input type="hidden" id="folderId" value="<?= isset($folderId) ? $folderId : '' ?>">
+
 <div class="card">
     <div class="card-body">
-        <p class="text-center" id="spinner-folder"></p>
-        <div class="row g-3 row-cols-1 row-cols-lg-4" id="foldersFirst">
+        <div class="row g-3 row-cols-1 row-cols-lg-4" id="listMonths">
 
         </div><!--end row-->
     </div>
@@ -28,5 +29,5 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
-<script src="<?= base_url() ?>js/filemanager/anios.js"></script>
+<script src="<?= base_url() ?>js/filemanager/foldersFilesMonths.js"></script>
 <?= $this->endSection() ?>

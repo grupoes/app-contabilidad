@@ -38,4 +38,8 @@ $routes->post('/change-password', 'Auth::changePassword');
 $routes->get('/obtener-analisis-movimientos/(:num)', 'Home::obtenerAnalisisMovimientos/$1');
 
 $routes->get('/administrador-archivos', 'FileManager::index');
-$routes->get('/folders', 'FileManager::listMonthsFolders');
+$routes->get('/folders-months', 'FileManager::listFoldersMonths');
+$routes->get('/filemanager/verify-year', 'FileManager::verifyYear');
+$routes->post('/foldersAll', 'FileManager::folders');
+$routes->get('/foldersMonths/(:any)', 'FileManager::foldersMonths/$1');
+$routes->get('/loadFolderMonths/(:any)', 'FileManager::loadFolderMonths/$1');
