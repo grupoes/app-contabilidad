@@ -43,3 +43,7 @@ $routes->get('/filemanager/verify-year', 'FileManager::verifyYear');
 $routes->post('/foldersAll', 'FileManager::folders');
 $routes->get('/foldersMonths/(:any)', 'FileManager::foldersMonths/$1');
 $routes->get('/loadFolderMonths/(:any)', 'FileManager::loadFolderMonths/$1');
+$routes->get('/folders', 'FileManager::listFoldersFiles');
+
+$routes->post('/create-folder', 'FileManager::createFolder');
+$routes->get('/foldersFiles/(:any)', 'FileManager::foldersFiles/$1');

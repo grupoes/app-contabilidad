@@ -15,12 +15,12 @@
                 <div class="menu-title">Sello y Firma</div>
             </a>
         </li>
-        <!--<li>
+        <li>
             <a href="/administrador-archivos">
                 <div class="parent-icon"><i class="material-icons-outlined">folder</i>
                 </div>
                 <div class="menu-title">Administrador de Archivos</div>
             </a>
-        </li>-->
+        </li>
     <?php endif; ?>
 </ul>

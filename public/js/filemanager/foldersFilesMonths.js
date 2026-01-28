@@ -50,3 +50,10 @@ function viewLoadedMonths(foldersMonths) {
 
   listMonths.innerHTML = html;
 }
+
+listMonths.addEventListener("click", (e) => {
+  if (e.target.closest(".folder")) {
+    const folderId = e.target.closest(".folder").getAttribute("data-id");
+    window.location.href = `${base_url}folders?folderId=${folderId}`;
+  }
+});
