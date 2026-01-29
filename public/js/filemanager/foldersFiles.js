@@ -2,33 +2,43 @@ const folderNew = document.getElementById("folderNew");
 const uploadFile = document.getElementById("uploadFile");
 const formNewFolder = document.getElementById("formNewFolder");
 const folderId = document.getElementById("folderId");
+const btnCreateFolder = document.getElementById("btnCreateFolder");
+
+const formUploadFile = document.getElementById("formUploadFile");
 
 const listFoldersFiles = document.getElementById("listFoldersFiles");
 
 loadFoldersFiles();
 
 folderNew.addEventListener("click", () => {
-  const modalFolder = new bootstrap.Modal(
-    document.getElementById("modalFolder"),
-    {
-      keyboard: false,
-    },
-  );
-  modalFolder.show();
+  $("#modalFolder").modal("show");
 });
 
 uploadFile.addEventListener("click", () => {
-  const modalUpload = new bootstrap.Modal(
-    document.getElementById("modalUploadFile"),
-    {
-      keyboard: false,
-    },
-  );
-  modalUpload.show();
+  $("#modalUploadFile").modal("show");
 });
+
+function notificacionAlert(variante, message) {
+  Lobibox.notify(variante, {
+    pauseDelayOnHover: true,
+    continueDelayOnInactiveTab: false,
+    position: "center top",
+    size: "mini",
+    msg: message,
+  });
+}
 
 formNewFolder.addEventListener("submit", (e) => {
   e.preventDefault();
+
+  btnCreateFolder.disabled = true;
+  btnCreateFolder.innerHTML = `
+    <span class="spinner-border spinner-border-sm me-2"
+          role="status"
+          aria-hidden="true"></span>
+    Creando...
+  `;
+
   const formData = new FormData(formNewFolder);
   fetch(`${base_url}create-folder`, {
     method: "POST",
@@ -37,11 +47,24 @@ formNewFolder.addEventListener("submit", (e) => {
     .then((res) => res.json())
     .then((data) => {
       if (data.status === "error") {
-        alert(data.message);
+        notificacionAlert("danger", data.message);
         return false;
       }
 
+      $("#modalFolder").modal("hide");
+      formNewFolder.reset();
+
+      notificacionAlert("success", data.message);
+
       loadFoldersFiles();
+    })
+    .catch((err) => {
+      console.log(err);
+      notificacionAlert("danger", "Error al crear la carpeta");
+    })
+    .finally(() => {
+      btnCreateFolder.disabled = false;
+      btnCreateFolder.innerHTML = `Crear`;
     });
 });
 
@@ -60,12 +83,39 @@ function viewFoldersFiles(foldersFiles) {
       case "application/vnd.google-apps.folder":
         html += `
             <div class="col">
-                <div class="folder d-flex align-items-center gap-3 border p-3 rounded file-item cursor-pointer" data-id="${item.id}">
-                    <div class="detail-icon fs-3 text-warning">
-                        <i class="bi bi-folder-fill"></i>
+                <div class="folder d-flex align-items-center justify-content-between gap-3 border p-3 rounded file-item cursor-pointer" data-id="${item.id}">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="detail-icon fs-3 text-warning">
+                            <i class="bi bi-folder-fill"></i>
+                        </div>
+                        <div class="detail-info">
+                            <p class="fw-bold mb-0">${item.name}</p>
+                        </div>
                     </div>
-                    <div class="detail-info">
-                        <p class="fw-bold mb-0">${item.name}</p>
+
+                    <div class="dropdown" onclick="event.stopPropagation()">
+                        <i class="bi bi-three-dots-vertical fs-4"
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"></i>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item folder" href="#">
+                                    📂 Abrir
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="renombrarCarpeta()">
+                                    ✏️ Renombrar
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="#" onclick="eliminarCarpeta()">
+                                    🗑️ Eliminar
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -112,18 +162,73 @@ function viewFoldersFiles(foldersFiles) {
 function viewFile(id, name, icono) {
   return `
     <div class="col file" data-id="${id}">
-        <div class="d-flex align-items-center gap-3 border p-3 rounded file-item cursor-pointer">
-            <div class="detail-icon fs-3 text-primary">
-                <i class="${icono}"></i>
+        <div class="d-flex align-items-center justify-content-between gap-3 border p-3 rounded file-item cursor-pointer">
+            <div class="d-flex align-items-center gap-3">
+              <div class="detail-icon fs-3 text-primary">
+                  <i class="${icono}"></i>
+              </div>
+              <div class="detail-info">
+                  <p class="fw-bold mb-0">${name}</p>
+              </div>
             </div>
-            <div class="detail-info">
-                <p class="fw-bold mb-0">${name}</p>
-            </div>
+            <div class="dropdown" onclick="event.stopPropagation()">
+                <i class="bi bi-three-dots-vertical fs-4" role="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="abrirCarpeta()">
+                            📂 Abrir
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#" onclick="renombrarCarpeta()">
+                            ✏️ Renombrar
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item text-danger" href="#" onclick="eliminarCarpeta()">
+                            🗑️ Eliminar
+                        </a>
+                    </li>
+                </ul>
+              </div>
         </div>
     </div>
     
     `;
 }
+
+formUploadFile.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(formUploadFile);
+  fetch(`${base_url}upload-files`, {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "error") {
+        notificacionAlert("danger", data.message);
+        return false;
+      }
+
+      console.log(data);
+
+      $("#modalFolder").modal("hide");
+      formUploadFile.reset();
+
+      notificacionAlert("success", data.message);
+
+      loadFoldersFiles();
+    })
+    .catch((err) => {
+      console.log(err);
+      notificacionAlert("danger", "Error al crear la carpeta");
+    })
+    .finally(() => {
+      console.log("finally");
+    });
+});
 
 listFoldersFiles.addEventListener("click", (e) => {
   if (e.target.closest(".folder")) {

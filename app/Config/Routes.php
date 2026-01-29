@@ -47,3 +47,5 @@ $routes->get('/folders', 'FileManager::listFoldersFiles');
 
 $routes->post('/create-folder', 'FileManager::createFolder');
 $routes->get('/foldersFiles/(:any)', 'FileManager::foldersFiles/$1');
+
+$routes->post('/upload-files', 'FileManager::uploadFiles');

@@ -315,4 +315,88 @@ class FileManager extends BaseController
             'foldersFiles' => $data['foldersFiles']
         ]);
     }
+
+    public function uploadFiles()
+    {
+        if (!session()->get('logged_in')) {
+            return redirect()->to(base_url('/'));
+        }
+
+        $folderParentId = $this->request->getPost('folderParentId');
+        $token = session()->get('token');
+        $ruc = session()->get('user')['username'];
+
+        // Obtener archivos
+        $files = $this->request->getFiles();
+
+        if (!isset($files['fileFolder'])) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'No se enviaron archivos'
+            ]);
+        }
+
+        $url = getenv('URL_SERVIDOR') . 'upload-file-multiples';
+
+        // Datos POST base
+        $postData = [
+            'ruc' => $ruc,
+            'folderParentId' => $folderParentId
+        ];
+
+        // Agregar archivos al POST
+        foreach ($files['fileFolder'] as $index => $file) {
+            if ($file->isValid() && !$file->hasMoved()) {
+                $postData["files[$index]"] = new \CURLFile(
+                    $file->getTempName(),
+                    $file->getMimeType(),
+                    $file->getName()
+                );
+            }
+        }
+
+        // Inicializar cURL
+        $ch = curl_init($url);
+
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $postData,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => [
+                "Authorization: Bearer $token"
+            ],
+            CURLOPT_SSL_VERIFYPEER => false, // solo si no tienes SSL válido
+        ]);
+
+        $response = curl_exec($ch);
+
+        // Error cURL
+        if ($response === false) {
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Error cURL: ' . $error
+            ]);
+        }
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        $result = json_decode($response, true);
+
+        if ($httpCode === 200 && isset($result['status']) && $result['status'] === 'success') {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Archivos subidos correctamente'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status'  => 'error',
+            'message' => $result['message'] ?? 'Error al subir archivos',
+            'debug'   => $result
+        ]);
+    }
 }
