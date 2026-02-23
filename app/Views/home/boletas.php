@@ -26,7 +26,7 @@
                     <select class="form-select" id="selectAnio">
                         <option value="0">Todos</option>
                         <?php foreach ($anios as $anio): ?>
-                            <option value="<?= $anio['id_anio'] ?>"><?= $anio['anio_descripcion'] ?></option>
+                            <option value="<?= $anio['id_anio'] ?>" <?= $anio['anio_descripcion'] == date('Y') ? 'selected' : '' ?>><?= $anio['anio_descripcion'] ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

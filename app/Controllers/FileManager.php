@@ -355,48 +355,55 @@ class FileManager extends BaseController
             }
         }
 
-        // Inicializar cURL
-        $ch = curl_init($url);
+        try {
+            // Inicializar cURL
+            $ch = curl_init($url);
 
-        curl_setopt_array($ch, [
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $postData,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER     => [
-                "Authorization: Bearer $token"
-            ],
-            CURLOPT_SSL_VERIFYPEER => false, // solo si no tienes SSL válido
-        ]);
+            curl_setopt_array($ch, [
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => $postData,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HTTPHEADER     => [
+                    "Authorization: Bearer $token"
+                ],
+                CURLOPT_SSL_VERIFYPEER => false, // solo si no tienes SSL válido
+            ]);
 
-        $response = curl_exec($ch);
+            $response = curl_exec($ch);
 
-        // Error cURL
-        if ($response === false) {
-            $error = curl_error($ch);
+            // Error cURL
+            if ($response === false) {
+                $error = curl_error($ch);
+                curl_close($ch);
+
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Error cURL: ' . $error
+                ]);
+            }
+
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
+            $result = json_decode($response, true);
+
+            if ($httpCode === 200 && isset($result['status']) && $result['status'] === 'success') {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'message' => $result['message']
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => $result['message'] ?? 'Error al subir archivos',
+                'debug'   => $result
+            ]);
+        } catch (\Exception $e) {
             return $this->response->setJSON([
                 'status' => 'error',
-                'message' => 'Error cURL: ' . $error
+                'message' => 'Excepción: ' . $e->getMessage()
             ]);
         }
-
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        $result = json_decode($response, true);
-
-        if ($httpCode === 200 && isset($result['status']) && $result['status'] === 'success') {
-            return $this->response->setJSON([
-                'status' => 'success',
-                'message' => 'Archivos subidos correctamente'
-            ]);
-        }
-
-        return $this->response->setJSON([
-            'status'  => 'error',
-            'message' => $result['message'] ?? 'Error al subir archivos',
-            'debug'   => $result
-        ]);
     }
 }
