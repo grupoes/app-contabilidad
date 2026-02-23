@@ -49,6 +49,7 @@ class Auth extends BaseController
             session()->set([
                 'token' => $result['token'],
                 'user' => $result['user'],
+                'id_usuario' => $result['user']['id'],
                 'nombre' => $result['user']['nombre'],
                 'role' => $result['user']['role'],
                 'primer_nombre' => explode(' ', trim($result['user']['nombre']))[0],
@@ -134,5 +135,48 @@ class Auth extends BaseController
                 'message' => 'error al consultar la api ' . $e->getMessage()
             ]);
         }
+    }
+
+    public function resetPasswordLink()
+    {
+        $email = $this->request->getPost('email');
+
+        $client = Services::curlrequest();
+
+        try {
+            $url = getenv('URL_SERVIDOR');
+
+            $response = $client->post($url . 'reset-password-link', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'email' => $email,
+                ],
+                'timeout' => 10,
+                'http_errors' => false
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            if (!$result || $result['status'] == 'error') {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $result['message']
+                ]);
+            }
+
+            return $this->response->setJSON($result);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'error al consultar la api ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function forgotPassword()
+    {
+        return view('auth/forgot_password');
     }
 }

@@ -75,6 +75,14 @@
 
                                     </div>
 
+                                    <div class="col-md-6">
+
+                                    </div>
+
+                                    <div class="col-md-6 text-end"> <a href="<?= base_url() ?>auth/forgot-password">¿Olvidaste tu contraseña?</a>
+                                    </div>
+
+
                                     <div class="col-12 mt-4">
                                         <div class="d-grid">
                                             <button type="submit" class="btn btn-grd btn-grd-deep-blue px-5">Acceder</button>

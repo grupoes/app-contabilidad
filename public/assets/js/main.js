@@ -127,13 +127,13 @@ $(function () {
   $(function () {
     for (
       var e = window.location,
-        o = $(".metismenu li a")
-          .filter(function () {
-            return this.href == e;
-          })
-          .addClass("")
-          .parent()
-          .addClass("mm-active");
+      o = $(".metismenu li a")
+        .filter(function () {
+          return this.href == e;
+        })
+        .addClass("")
+        .parent()
+        .addClass("mm-active");
       o.is("li");
     )
       o = o.parent("").addClass("mm-show").parent("").addClass("mm-active");
@@ -160,3 +160,13 @@ logoutSystem.addEventListener("click", function (event) {
       alert("Error al cerrar sesión");
     });
 });
+
+function notificacionAlert(variante, message) {
+  Lobibox.notify(variante, {
+    pauseDelayOnHover: true,
+    continueDelayOnInactiveTab: false,
+    position: "center top",
+    size: "mini",
+    msg: message,
+  });
+}

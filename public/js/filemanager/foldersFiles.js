@@ -18,16 +18,6 @@ uploadFile.addEventListener("click", () => {
   $("#modalUploadFile").modal("show");
 });
 
-function notificacionAlert(variante, message) {
-  Lobibox.notify(variante, {
-    pauseDelayOnHover: true,
-    continueDelayOnInactiveTab: false,
-    position: "center top",
-    size: "mini",
-    msg: message,
-  });
-}
-
 formNewFolder.addEventListener("submit", (e) => {
   e.preventDefault();
 

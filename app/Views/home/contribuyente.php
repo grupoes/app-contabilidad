@@ -100,9 +100,36 @@
     </div>
 </div>
 
+<!-- Modal para Correo Electrónico -->
+<div class="modal fade" id="modalCorreo" tabindex="-1" aria-labelledby="modalCorreoLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCorreoLabel">Agrega el correo electrónico para después recuperar su contraseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formCorreo">
+                <div class="modal-body">
+                    <input type="hidden" id="id" name="id" value="<?= session()->get('id_usuario') ?>">
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="emailInput" name="emailInput" placeholder="correo@ejemplo.com" required>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnGuardarCorreo">Guardar Correo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('js') ?>
+<script src="<?= base_url() ?>assets/plugins/notifications/js/lobibox.min.js"></script>
+<script src="<?= base_url() ?>assets/plugins/notifications/js/notifications.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script src="<?= base_url() ?>js/home/contribuyente.js"></script>
 <?= $this->endSection() ?>

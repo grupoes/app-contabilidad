@@ -185,3 +185,43 @@ function descargarExcel() {
 
   XLSX.writeFile(wb, "analisis_movimiento_" + anio + ".xlsx");
 }
+
+// ========================
+// Lanzar modal al cargar
+// ========================
+document.addEventListener("DOMContentLoaded", () => {
+  verifyCorreo();
+});
+
+function verifyCorreo() {
+  fetch(`${base_url}verify-correo`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === 'warning') {
+        const modalCorreo = new bootstrap.Modal(document.getElementById('modalCorreo'));
+        modalCorreo.show();
+      }
+
+    });
+}
+
+const formCorreo = document.getElementById("formCorreo");
+formCorreo.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const formData = new FormData(formCorreo);
+  fetch(`${base_url}save-correo`, {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        const modalCorreo = bootstrap.Modal.getInstance(document.getElementById('modalCorreo'));
+        modalCorreo.hide();
+
+        alert(data.message);
+      } else {
+        alert(data.message);
+      }
+    });
+});

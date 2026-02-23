@@ -8,6 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Auth::index');
 $routes->post('/login', 'Auth::login');
 $routes->get('/logout', 'Auth::logout');
+$routes->get('/auth/forgot-password', 'Auth::forgotPassword');
+$routes->post('auth/reset-password-link', 'Auth::resetPasswordLink');
 
 $routes->get('/home', 'Home::index');
 $routes->get('/empresas', 'Home::empresas');
@@ -31,6 +33,8 @@ $routes->post('/consulta-pdt-plame', 'Home::consultaPdtPlame');
 $routes->get('/pdt-anual', 'Home::pdtAnual');
 $routes->get('/verificar-pdt-anual', 'Home::verificarPdtAnual');
 $routes->post('/query-pdt-anual', 'Home::consultaPdtAnual');
+$routes->get('/verify-correo', 'Home::verifyCorreo');
+$routes->post('/save-correo', 'Home::saveCorreo');
 
 $routes->get('/perfil', 'Auth::perfil');
 $routes->post('/change-password', 'Auth::changePassword');

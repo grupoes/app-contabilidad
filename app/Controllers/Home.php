@@ -482,4 +482,93 @@ class Home extends BaseController
             ]);
         }
     }
+
+    public function verifyCorreo()
+    {
+
+        $id_usuario = session()->get('id_usuario');
+
+        $client = \Config\Services::curlrequest();
+
+        $url = getenv('URL_SERVIDOR') . 'verify-correo/' . $id_usuario;
+
+        $response = $client->get($url, [
+            'headers' => [
+                'Authorization' => "Bearer " . session()->get('token'),
+                'Accept' => 'application/json'
+            ],
+            'http_errors' => false
+        ]);
+
+        // 👀 SI TOKEN EXPIRÓ
+        if ($response->getStatusCode() === 401) {
+            session()->destroy();
+            return redirect()->to(base_url())->send();
+            exit;
+        }
+
+        $data = json_decode($response->getBody(), true);
+
+        if (!$data || $data['status'] === 'error') {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => $data['message']
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status' => $data['status'],
+            'message' => $data['message']
+        ]);
+    }
+
+    public function saveCorreo()
+    {
+        try {
+            $id = $this->request->getPost('id');
+            $email = $this->request->getPost('emailInput');
+
+            $client = \Config\Services::curlrequest();
+
+            $url = getenv('URL_SERVIDOR') . 'save-correo';
+
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'http_errors' => false,
+                'json' => [
+                    'id' => $id,
+                    'email' => $email
+                ]
+            ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!$data || $data['status'] === 'error') {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $data['message']
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'correo guardado correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'no se pudo conectar a la api ' . $e->getMessage()
+            ]);
+        }
+    }
 }
