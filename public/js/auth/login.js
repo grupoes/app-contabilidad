@@ -12,7 +12,7 @@ formLogin.addEventListener("submit", function (event) {
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.status === "success") {
+      if (data.status === "success" || data.status === "warning") {
         window.location.href = data.redirect;
       } else {
         message_error.innerHTML = `

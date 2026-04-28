@@ -45,6 +45,24 @@ class Auth extends BaseController
                 ]);
             }
 
+            if ($username == $password) {
+                session()->set([
+                    'token' => $result['token'],
+                    'user' => $result['user'],
+                    'id_usuario' => $result['user']['id'],
+                    'nombre' => $result['user']['nombre'],
+                    'role' => $result['user']['role'],
+                    'primer_nombre' => explode(' ', trim($result['user']['nombre']))[0],
+                    'logged_in' => false
+                ]);
+
+                return $this->response->setJSON([
+                    'status' => 'warning',
+                    'message' => 'Contraseña por defecto, cámbiala por una personalizada',
+                    'redirect' => base_url('auth/reset-password')
+                ]);
+            }
+
             // Guardar token en sesión
             session()->set([
                 'token' => $result['token'],
@@ -178,5 +196,71 @@ class Auth extends BaseController
     public function forgotPassword()
     {
         return view('auth/forgot_password');
+    }
+
+    public function resetPassword()
+    {
+        // Permitir acceso solo si hay una sesión iniciada (logged_in=false por contraseña por defecto)
+        if (!session()->get('token')) {
+            return redirect()->to(base_url('/'));
+        }
+        return view('auth/reset_password');
+    }
+
+    public function verifyCode()
+    {
+        if (!session()->get('token')) {
+            return redirect()->to(base_url('/'));
+        }
+        return view('auth/verify_code');
+    }
+
+    public function verifyCodePost()
+    {
+        $code = $this->request->getPost('code');
+
+        $client = Services::curlrequest();
+
+        try {
+            $url = getenv('URL_SERVIDOR');
+
+            $response = $client->post($url . 'verify-code', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . session()->get('token'),
+                    'Content-Type'  => 'application/json',
+                ],
+                'json' => ['code' => $code],
+                'timeout'     => 10,
+                'http_errors' => false,
+            ]);
+
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Sesión expirada.']);
+            }
+
+            $result = json_decode($response->getBody(), true);
+
+            if (!$result || $result['status'] === 'error') {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => $result['message'] ?? 'Código incorrecto o expirado.',
+                ]);
+            }
+
+            // Código válido: activar sesión completa
+            session()->set('logged_in', true);
+
+            return $this->response->setJSON([
+                'status'   => 'success',
+                'message'  => 'Código verificado correctamente.',
+                'redirect' => base_url('/home'),
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Error de conexión: ' . $e->getMessage(),
+            ]);
+        }
     }
 }

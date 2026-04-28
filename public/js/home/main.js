@@ -1,5 +1,3 @@
-document.addEventListener("DOMContentLoaded", () => {});
-
 const listEmpresas = document.getElementById("listEmpresas");
 
 loadEmpresas();
