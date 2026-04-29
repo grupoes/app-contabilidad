@@ -194,12 +194,15 @@ class Auth extends BaseController
             ]);
 
             if (isset($result['username'])) {
-                session()->set('user', ['username' => $result['username']]);
+                $userSession = session()->get('user') ?? [];
+                $userSession['username'] = $result['username'];
+                session()->set('user', $userSession);
             }
 
             return $this->response->setJSON([
                 'status'   => 'success',
                 'message'  => $result['message'] ?? 'Código enviado correctamente.',
+                'masked_email' => $result['masked_email'] ?? null,
                 'redirect' => base_url('auth/verify-code')
             ]);
         } catch (\Exception $e) {

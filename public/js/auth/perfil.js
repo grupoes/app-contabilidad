@@ -67,6 +67,9 @@ $(document).ready(function() {
             btnChangePassword.innerHTML = 'Verificar y Cambiar Contraseña';
 
             if (data.status === "success") {
+                if (data.masked_email) {
+                    document.getElementById('otpTextDescription').innerHTML = `Se envió el código al siguiente correo <b>${data.masked_email}</b>. Ingresa los 6 dígitos para continuar.`;
+                }
                 otpModal.show();
             } else {
                 showAlert(message_error, data.message || "Error al enviar el código.", "danger");

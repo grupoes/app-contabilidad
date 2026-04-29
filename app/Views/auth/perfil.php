@@ -77,8 +77,8 @@
                                     <i class='bx bx-shield-quarter text-primary' style="font-size: 3rem;"></i>
                                 </div>
                                 <h6 class="mb-2">Ingresa el código enviado a tu correo</h6>
-                                <p class="text-muted small mb-4">Por seguridad, hemos enviado un código de 6 dígitos a tu correo electrónico registrado.</p>
-                                
+                                <p class="text-white small mb-4" id="otpTextDescription">Por seguridad, hemos enviado un código de 6 dígitos a tu correo electrónico registrado.</p>
+
                                 <div class="otp-wrapper d-flex justify-content-center gap-2 mb-4">
                                     <input type="text" class="form-control otp-input text-center fw-bold fs-4" maxlength="1" style="width: 45px; height: 50px;">
                                     <input type="text" class="form-control otp-input text-center fw-bold fs-4" maxlength="1" style="width: 45px; height: 50px;">
