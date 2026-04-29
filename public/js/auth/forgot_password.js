@@ -17,20 +17,31 @@ const formForgotPassword = document.getElementById('formForgotPassword');
 
 formForgotPassword.addEventListener('submit', function (e) {
     e.preventDefault();
-    fetch('auth/reset-password-link', {
+    
+    const btn = formForgotPassword.querySelector('button[type="submit"]');
+    const originalText = btn.innerText;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+
+    fetch('/auth/reset-password-link', {
         method: 'POST',
         body: new FormData(formForgotPassword)
     })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                alert(data.message);
-                formForgotPassword.reset();
+            if (data.status === 'success') {
+                // Redirigir a la vista de verificación de código
+                window.location.href = data.redirect;
             } else {
-                alert(data.message);
+                alert(data.message || 'Ocurrió un error al procesar la solicitud.');
+                btn.disabled = false;
+                btn.innerText = originalText;
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            alert('Error de conexión. Intente de nuevo.');
+            btn.disabled = false;
+            btn.innerText = originalText;
         });
 });

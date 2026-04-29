@@ -12,6 +12,8 @@ $routes->get('/auth/forgot-password', 'Auth::forgotPassword');
 $routes->get('/auth/reset-password', 'Auth::resetPassword');
 $routes->get('/auth/verify-code', 'Auth::verifyCode');
 $routes->post('/auth/verify-code', 'Auth::verifyCodePost');
+$routes->get('/auth/set-new-password', 'Auth::setNewPassword');
+$routes->post('/auth/update-password', 'Auth::updatePassword');
 $routes->post('auth/reset-password-link', 'Auth::resetPasswordLink');
 
 $routes->get('/home', 'Home::index');

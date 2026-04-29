@@ -223,6 +223,7 @@
 
                             <!-- Formulario OTP -->
                             <form id="formVerifyCode" novalidate>
+                                <input type="hidden" id="emailSent" value="<?= esc(session()->get('reset_email') ?? '') ?>">
 
                                 <label class="form-label fw-semibold text-white d-block text-center mb-3" style="font-size:13px;">
                                     Código de verificación <span class="text-danger">*</span>

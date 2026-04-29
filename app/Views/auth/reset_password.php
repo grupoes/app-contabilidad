@@ -151,7 +151,7 @@
                             <!-- Banner informativo -->
                             <div class="info-banner mt-4">
                                 <i class='bx bx-info-circle'></i>
-                                <p>Ingresa tu <strong>correo electrónico</strong> y te enviaremos un enlace para establecer una contraseña segura y personalizada.</p>
+                                <p>Ingresa tu <strong>correo electrónico</strong> y te enviaremos un enlace para establecer una contraseña segura y personalizada. Recuerda revisar también tu carpeta de <strong>spam</strong> o correo no deseado.</p>
                             </div>
 
                             <!-- Alerta de respuesta -->
@@ -237,13 +237,15 @@
                     if (data.status === 'success') {
                         alertMsg.classList.remove('alert-danger', 'bg-danger');
                         alertMsg.classList.add('alert-success', 'bg-success', 'text-white');
-                        alertText.textContent = data.message || 'Enlace enviado. Revisa tu correo electrónico.';
-                        form.reset();
-                    } else {
-                        alertMsg.classList.remove('alert-success', 'bg-success', 'text-white');
-                        alertMsg.classList.add('alert-danger', 'bg-danger', 'text-white');
-                        alertText.textContent = data.message || 'Ocurrió un error. Intenta de nuevo.';
+                        alertText.textContent = data.message || 'Código enviado. Redirigiendo...';
+                        setTimeout(() => {
+                            window.location.href = data.redirect || '<?= base_url('auth/verify-code') ?>';
+                        }, 1200);
+                        return;
                     }
+                    alertMsg.classList.remove('alert-success', 'bg-success', 'text-white');
+                    alertMsg.classList.add('alert-danger', 'bg-danger', 'text-white');
+                    alertText.textContent = data.message || 'Ocurrió un error. Intenta de nuevo.';
                     btnEnviar.disabled = false;
                     btnEnviar.innerHTML = '<i class="bx bx-send me-1"></i> Enviar enlace de cambio';
                 })

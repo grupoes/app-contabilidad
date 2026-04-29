@@ -157,19 +157,23 @@ class Auth extends BaseController
 
     public function resetPasswordLink()
     {
-        $email = $this->request->getPost('email');
+        $email = $this->request->getPost('email') ?: session()->get('reset_email');
+        $id_user = session()->get('id_usuario');
+        $username = session()->get('user')['username'] ?? null;
 
         $client = Services::curlrequest();
 
         try {
             $url = getenv('URL_SERVIDOR');
 
-            $response = $client->post($url . 'reset-password-link', [
+            $response = $client->post($url . 'auth/reset-password-link', [
                 'headers' => [
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
                     'email' => $email,
+                    'id_user' => $id_user,
+                    'username' => $username
                 ],
                 'timeout' => 10,
                 'http_errors' => false
@@ -177,14 +181,27 @@ class Auth extends BaseController
 
             $result = json_decode($response->getBody(), true);
 
-            if (!$result || $result['status'] == 'error') {
+            if (!$result || empty($result['status'])) {
                 return $this->response->setJSON([
                     'status' => 'error',
-                    'message' => $result['message']
+                    'message' => $result['message'] ?? 'No se pudo enviar el código de verificación.'
                 ]);
             }
 
-            return $this->response->setJSON($result);
+            session()->set([
+                'reset_email' => $email,
+                'id_usuario'  => $result['id_user'] ?? $id_user,
+            ]);
+
+            if (isset($result['username'])) {
+                session()->set('user', ['username' => $result['username']]);
+            }
+
+            return $this->response->setJSON([
+                'status'   => 'success',
+                'message'  => $result['message'] ?? 'Código enviado correctamente.',
+                'redirect' => base_url('auth/verify-code')
+            ]);
         } catch (\Exception $e) {
             return $this->response->setJSON([
                 'status' => 'error',
@@ -209,7 +226,8 @@ class Auth extends BaseController
 
     public function verifyCode()
     {
-        if (!session()->get('token')) {
+        // Permitir acceso si hay un token (reset por default) O si hay un correo en proceso (olvidó contraseña)
+        if (!session()->get('token') && !session()->get('reset_email')) {
             return redirect()->to(base_url('/'));
         }
         return view('auth/verify_code');
@@ -218,18 +236,24 @@ class Auth extends BaseController
     public function verifyCodePost()
     {
         $code = $this->request->getPost('code');
+        $id_user = session()->get('id_usuario');
+        $username = session()->get('user')['username'] ?? null;
 
         $client = Services::curlrequest();
 
         try {
             $url = getenv('URL_SERVIDOR');
 
-            $response = $client->post($url . 'verify-code', [
+            $response = $client->post($url . 'auth/verify-code', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . session()->get('token'),
                     'Content-Type'  => 'application/json',
                 ],
-                'json' => ['code' => $code],
+                'json' => [
+                    'code'     => $code,
+                    'id_user'  => $id_user,
+                    'username' => $username,
+                ],
                 'timeout'     => 10,
                 'http_errors' => false,
             ]);
@@ -241,19 +265,124 @@ class Auth extends BaseController
 
             $result = json_decode($response->getBody(), true);
 
-            if (!$result || $result['status'] === 'error') {
+            if (!$result || empty($result['status'])) {
                 return $this->response->setJSON([
                     'status'  => 'error',
                     'message' => $result['message'] ?? 'Código incorrecto o expirado.',
                 ]);
             }
 
-            // Código válido: activar sesión completa
-            session()->set('logged_in', true);
+            // Código válido: permitir acceso a cambio de contraseña
+            session()->set('password_reset_authorized', true);
+            session()->remove('reset_email');
 
             return $this->response->setJSON([
                 'status'   => 'success',
                 'message'  => 'Código verificado correctamente.',
+                'redirect' => base_url('auth/set-new-password'),
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Error de conexión: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function setNewPassword()
+    {
+        // Permitir si ya fue autorizado (verificó código)
+        if (!session()->get('password_reset_authorized')) {
+            return redirect()->to(base_url('/'));
+        }
+        return view('auth/set_new_password');
+    }
+
+    public function updatePassword()
+    {
+        if (!session()->get('password_reset_authorized')) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Acceso no autorizado.']);
+        }
+
+        $newPassword = $this->request->getPost('new_password');
+        $confirmPassword = $this->request->getPost('confirm_password');
+
+        // Validación: Mínimo 8 caracteres
+        if (strlen($newPassword) < 8) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'La contraseña debe tener al menos 8 caracteres.'
+            ]);
+        }
+
+        // Validación: Alfanumérico
+        if (!preg_match('/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/', $newPassword)) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'La contraseña debe ser alfanumérica (letras y números).'
+            ]);
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Las contraseñas no coinciden.'
+            ]);
+        }
+
+        $id_user = session()->get('id_usuario');
+        $username = session()->get('user')['username'] ?? null;
+
+        $client = Services::curlrequest();
+
+        try {
+            $url = getenv('URL_SERVIDOR');
+
+            $response = $client->post($url . 'auth/update-password', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . session()->get('token'),
+                    'Content-Type'  => 'application/json',
+                ],
+                'json' => [
+                    'newPassword'     => $newPassword,
+                    'confirmPassword' => $confirmPassword,
+                    'id_user'         => $id_user,
+                    'username'        => $username,
+                ],
+                'timeout'     => 10,
+                'http_errors' => false,
+            ]);
+
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Sesión expirada.']);
+            }
+
+            $result = json_decode($response->getBody(), true);
+
+            if (!$result || empty($result['status'])) {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => $result['message'] ?? 'No se pudo actualizar la contraseña.',
+                ]);
+            }
+
+            // Éxito: Activar sesión completa y limpiar flags
+            session()->set([
+                'logged_in'     => true,
+                'token'         => $result['token'],
+                'user'          => $result['user'],
+                'id_usuario'    => $result['user']['id'],
+                'nombre'        => $result['user']['nombre'],
+                'role'          => $result['user']['role'],
+                'primer_nombre' => explode(' ', trim($result['user']['nombre']))[0]
+            ]);
+            
+            session()->remove('password_reset_authorized');
+
+            return $this->response->setJSON([
+                'status'   => 'success',
+                'message'  => 'Contraseña actualizada con éxito.',
                 'redirect' => base_url('/home'),
             ]);
         } catch (\Exception $e) {
