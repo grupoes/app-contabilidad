@@ -226,6 +226,7 @@
 
     <!--plugins-->
     <script src="<?= base_url() ?>assets/js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!--plugins-->
     <script src="<?= base_url() ?>assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
     <script src="<?= base_url() ?>assets/plugins/metismenu/metisMenu.min.js"></script>

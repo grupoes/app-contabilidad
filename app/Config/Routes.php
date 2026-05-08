@@ -15,6 +15,7 @@ $routes->post('/auth/verify-code', 'Auth::verifyCodePost');
 $routes->get('/auth/set-new-password', 'Auth::setNewPassword');
 $routes->post('/auth/update-password', 'Auth::updatePassword');
 $routes->post('auth/reset-password-link', 'Auth::resetPasswordLink');
+$routes->get('auth/verify-user/(:any)', 'Auth::verifyUser/$1');
 
 $routes->get('/home', 'Home::index');
 $routes->get('/empresas', 'Home::empresas');
@@ -58,3 +59,7 @@ $routes->post('/create-folder', 'FileManager::createFolder');
 $routes->get('/foldersFiles/(:any)', 'FileManager::foldersFiles/$1');
 
 $routes->post('/upload-files', 'FileManager::uploadFiles');
+
+$routes->get('/personal', 'Personal::index');
+$routes->get('/get-lista-personal', 'Personal::getListaPersonal');
+$routes->get('/reset-personal/(:num)', 'Personal::resetPersonal/$1');

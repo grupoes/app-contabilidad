@@ -55,7 +55,7 @@
                         <div class="card-body p-sm-5">
                             <img src="<?= base_url() ?>assets/images/auth/auth_logo_light.png" class="mb-4" width="145" alt="">
                             <h4 class="fw-bold">¿Has olvidado tu contraseña?</h4>
-                            <p class="mb-0">Ingrese su correo electrónico registrado para restablecer la contraseña</p>
+                            <p class="mb-0">Ingrese su correo electrónico registrado para restablecer la contraseña <b><?= $masked_email ?? '' ?></b></p>
 
                             <div class="form-body mt-4">
                                 <form class="row g-4" id="formForgotPassword">

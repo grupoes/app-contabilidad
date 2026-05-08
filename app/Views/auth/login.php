@@ -79,7 +79,7 @@
 
                                     </div>
 
-                                    <div class="col-md-6 text-end"> <a href="<?= base_url() ?>auth/forgot-password">¿Olvidaste tu contraseña?</a>
+                                    <div class="col-md-6 text-end"> <a href="javascript:;" id="forgot-password">¿Olvidaste tu contraseña?</a>
                                     </div>
 
 
@@ -104,7 +104,11 @@
     <!--authentication-->
 
     <!--plugins-->
+    <script>
+        const BASE_URL = "<?= base_url() ?>";
+    </script>
     <script src="assets/js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {

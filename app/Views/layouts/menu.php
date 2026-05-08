@@ -15,6 +15,13 @@
                 <div class="menu-title">Sello y Firma</div>
             </a>
         </li>
+        <li>
+            <a href="/personal">
+                <div class="parent-icon"><i class="material-icons-outlined">group</i>
+                </div>
+                <div class="menu-title">Personal</div>
+            </a>
+        </li>
         <!--<li>
             <a href="/administrador-archivos">
                 <div class="parent-icon"><i class="material-icons-outlined">folder</i>

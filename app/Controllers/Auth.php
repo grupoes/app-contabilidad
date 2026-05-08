@@ -215,7 +215,10 @@ class Auth extends BaseController
 
     public function forgotPassword()
     {
-        return view('auth/forgot_password');
+        $data = [
+            'masked_email' => session()->get('masked_email')
+        ];
+        return view('auth/forgot_password', $data);
     }
 
     public function resetPassword()
@@ -392,6 +395,55 @@ class Auth extends BaseController
             return $this->response->setJSON([
                 'status'  => 'error',
                 'message' => 'Error de conexión: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function verifyUser($user)
+    {
+        $client = Services::curlrequest();
+        try {
+            $url = getenv('URL_SERVIDOR');
+            $response = $client->get($url . 'verificar-usuario/' . $user, [
+                'http_errors' => false,
+                'timeout' => 10,
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            if (!$result) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'No se pudo conectar con el servidor.'
+                ]);
+            }
+
+            if (isset($result['status']) && ($result['status'] === 'success' || $result['status'] === true)) {
+                $email = $result['email'] ?? '';
+                $masked_email = '';
+                if ($email) {
+                    list($name, $domain) = explode('@', $email);
+                    if (strlen($name) <= 8) {
+                        $masked_email = substr($name, 0, 1) . '******' . substr($name, -1) . '@' . $domain;
+                    } else {
+                        $masked_email = substr($name, 0, 4) . '******' . substr($name, -4) . '@' . $domain;
+                    }
+                }
+
+                session()->set([
+                    'id_usuario' => $result['user']['id'] ?? null,
+                    'user' => [
+                        'username' => $user
+                    ],
+                    'masked_email' => $masked_email
+                ]);
+            }
+
+            return $this->response->setJSON($result);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Error de conexión: ' . $e->getMessage()
             ]);
         }
     }
