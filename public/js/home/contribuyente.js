@@ -114,7 +114,7 @@ function viewMovimientos(datos) {
     total_ventas += parseFloat(mov.total_ventas);
     total_compras += parseFloat(mov.total_compras);
 
-    let compras_gravadas = mov.compras_gravadas_decimal;
+    /*let compras_gravadas = mov.compras_gravadas_decimal;
     compras_gravadas = parseFloat(compras_gravadas.replace(/,/g, ""));
 
     let importe_compras = mov.total_compras_decimal;
@@ -132,7 +132,7 @@ function viewMovimientos(datos) {
       });
 
       total_compras += igv;
-    }
+    }*/
 
     ventas_gravadas += parseFloat(
       mov.ventas_gravadas_decimal.replace(/,/g, ""),
