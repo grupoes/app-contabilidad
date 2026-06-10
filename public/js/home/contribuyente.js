@@ -156,10 +156,8 @@ function viewMovimientos(datos) {
       <td></td>
       <td></td>
       <td></td>
-      <td><strong>${total_ventas}</strong></td>
       <td></td>
       <td></td>
-      <td><strong>${total_compras}</strong></td>
     </tr>
   `;
 
