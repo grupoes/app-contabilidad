@@ -170,6 +170,7 @@ function viewMovimientos(datos) {
 
   html += `
     <tr>
+      <td><strong>Total</strong></td>
       <td>${ventas_gravadas.toLocaleString("es-PE", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
