@@ -135,10 +135,8 @@ function viewMovimientos(datos) {
       <td>${mov.mes_descripcion}</td>
       <td>${mov.ventas_gravadas_decimal}</td>
       <td>${mov.ventas_no_gravadas_decimal}</td>
-      <td>${mov.total_ventas_decimal}</td>
       <td>${mov.compras_gravadas_decimal}</td>
       <td>${mov.compras_no_gravadas_decimal}</td>
-      <td>${importe_compras}</td>
     </tr>
     `;
   });
@@ -197,11 +195,12 @@ function verifyCorreo() {
   fetch(`${base_url}verify-correo`)
     .then((response) => response.json())
     .then((data) => {
-      if (data.status === 'warning') {
-        const modalCorreo = new bootstrap.Modal(document.getElementById('modalCorreo'));
+      if (data.status === "warning") {
+        const modalCorreo = new bootstrap.Modal(
+          document.getElementById("modalCorreo"),
+        );
         modalCorreo.show();
       }
-
     });
 }
 
@@ -216,7 +215,9 @@ formCorreo.addEventListener("submit", (e) => {
     .then((response) => response.json())
     .then((data) => {
       if (data.status === "success") {
-        const modalCorreo = bootstrap.Modal.getInstance(document.getElementById('modalCorreo'));
+        const modalCorreo = bootstrap.Modal.getInstance(
+          document.getElementById("modalCorreo"),
+        );
         modalCorreo.hide();
 
         alert(data.message);
