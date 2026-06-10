@@ -105,6 +105,10 @@ function viewMovimientos(datos) {
 
   let total_ventas = 0;
   let total_compras = 0;
+  let ventas_gravadas = 0;
+  let ventas_no_gravadas = 0;
+  let compras_gravadas = 0;
+  let compras_no_gravadas = 0;
 
   datos.forEach((mov) => {
     total_ventas += parseFloat(mov.total_ventas);
@@ -130,6 +134,19 @@ function viewMovimientos(datos) {
       total_compras += igv;
     }
 
+    ventas_gravadas += parseFloat(
+      mov.ventas_gravadas_decimal.replace(/,/g, ""),
+    );
+    ventas_no_gravadas += parseFloat(
+      mov.ventas_no_gravadas_decimal.replace(/,/g, ""),
+    );
+    compras_gravadas += parseFloat(
+      mov.compras_gravadas_decimal.replace(/,/g, ""),
+    );
+    compras_no_gravadas += parseFloat(
+      mov.compras_no_gravadas_decimal.replace(/,/g, ""),
+    );
+
     html += `
     <tr>
       <td>${mov.mes_descripcion}</td>
@@ -153,11 +170,22 @@ function viewMovimientos(datos) {
 
   html += `
     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>${ventas_gravadas.toLocaleString("es-PE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}</td>
+      <td>${ventas_no_gravadas.toLocaleString("es-PE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}</td>
+      <td>${compras_gravadas.toLocaleString("es-PE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}</td>
+      <td>${compras_no_gravadas.toLocaleString("es-PE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}</td>
     </tr>
   `;
 
