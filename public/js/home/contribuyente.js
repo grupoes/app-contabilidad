@@ -166,14 +166,15 @@ year.addEventListener("change", () => {
 });
 
 function descargarExcel() {
-  let anio = year.options[year.selectedIndex].text;
+  const anio = year.options[year.selectedIndex].text;
   const tabla = document.getElementById("tableAnalisisMovimientos");
 
-  // Load ExcelJS dynamically from CDN if not present
   function loadExcelJSScript() {
     return new Promise((resolve, reject) => {
-      if (window.ExcelJS && typeof window.ExcelJS.Workbook !== "undefined")
+      if (window.ExcelJS && typeof window.ExcelJS.Workbook !== "undefined") {
         return resolve();
+      }
+
       const urls = [
         "https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js",
         "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js",
@@ -181,25 +182,27 @@ function descargarExcel() {
       let idx = 0;
 
       function tryLoad() {
-        if (window.ExcelJS && typeof window.ExcelJS.Workbook !== "undefined")
+        if (window.ExcelJS && typeof window.ExcelJS.Workbook !== "undefined") {
           return resolve();
-        if (idx >= urls.length)
+        }
+        if (idx >= urls.length) {
           return reject(new Error("Failed to load ExcelJS from CDNs"));
+        }
 
         const s = document.createElement("script");
         s.src = urls[idx++];
         s.onload = () => {
-          // allow UMD to attach
           setTimeout(() => {
             if (
               window.ExcelJS &&
               typeof window.ExcelJS.Workbook !== "undefined"
-            )
+            ) {
               return resolve();
+            }
             tryLoad();
           }, 100);
         };
-        s.onerror = () => tryLoad();
+        s.onerror = tryLoad;
         document.head.appendChild(s);
       }
 
@@ -237,21 +240,14 @@ function descargarExcel() {
       const workbook = new ExcelJS.Workbook();
       const ws = workbook.addWorksheet("Analisis Movimiento " + anio);
 
-      // Read rows from table
       const trs = Array.from(tabla.querySelectorAll("tr"));
       const lastRowIndex = trs.length - 1;
+
       trs.forEach((tr, rowIndex) => {
         const cells = Array.from(tr.children);
         const rowValues = cells.map((td) => td.textContent.trim());
         const row = ws.addRow(rowValues);
 
-        // Apply header style on first row
-        if (rowIndex === 0) {
-          row.font = { bold: true };
-          row.alignment = { vertical: "middle", horizontal: "center" };
-        }
-
-        // Apply border to each cell
         row.eachCell({ includeEmpty: true }, (cell) => {
           cell.border = {
             top: { style: "thin" },
@@ -259,36 +255,35 @@ function descargarExcel() {
             bottom: { style: "thin" },
             right: { style: "thin" },
           };
-          // Try to set numeric format if looks like number
-          const v = cell.value;
-          if (typeof v === "string") {
-            const num = v
+
+          if (rowIndex === 0 || rowIndex === lastRowIndex) {
+            cell.font = Object.assign({}, cell.font, { bold: true });
+          }
+          if (rowIndex === 0) {
+            cell.alignment = { vertical: "middle", horizontal: "center" };
+          }
+          if (rowIndex === lastRowIndex) {
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FFF9F9F9" },
+            };
+          }
+
+          if (typeof cell.value === "string") {
+            const raw = cell.value
               .replace(/\./g, "")
               .replace(/,/g, ".")
               .replace(/[^0-9.-]/g, "");
-            if (num !== "" && !isNaN(Number(num))) {
-              cell.value = Number(num);
+            if (raw !== "" && !isNaN(Number(raw))) {
+              cell.value = Number(raw);
               cell.numFmt = "#,##0.00";
-              // Ensure header and last row cells are bold
-              if (rowIndex === 0) {
-                cell.font = Object.assign({}, cell.font, { bold: true });
-              }
-              if (rowIndex === lastRowIndex) {
-                cell.font = Object.assign({}, cell.font, { bold: true });
-                // light fill for last row
-                cell.fill = cell.fill || {
-                  type: "pattern",
-                  pattern: "solid",
-                  fgColor: { argb: "FFF9F9F9" },
-                };
-              }
               cell.alignment = { horizontal: "right" };
             }
           }
         });
       });
 
-      // Adjust column widths
       ws.columns.forEach((col) => {
         let maxLength = 10;
         col.eachCell({ includeEmpty: true }, (cell) => {
@@ -321,6 +316,7 @@ function descargarExcel() {
       fallbackHtmlXls();
     }
   }
+
   loadExcelJSScript()
     .then(exportWithExcelJS)
     .catch((err) => {
