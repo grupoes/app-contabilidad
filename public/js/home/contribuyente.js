@@ -167,32 +167,120 @@ year.addEventListener("change", () => {
 
 function descargarExcel() {
   let anio = year.options[year.selectedIndex].text;
-  // Fallback: export as HTML-based .xls with inline styles (Excel opens and preserves basic formatting)
   const tabla = document.getElementById("tableAnalisisMovimientos");
-  const style = `
-    <style>
-      table { border-collapse: collapse; }
-      table, th, td { border: 1px solid #000; }
-      th { font-weight: bold; background-color: #f2f2f2; text-align: center; }
-      td { padding: 4px; }
-    </style>
-  `;
 
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>${style}</head><body><table>${tabla.innerHTML}</table></body></html>`;
-
-  const blob = new Blob([html], { type: "application/vnd.ms-excel" });
-  const filename = "analisis_movimiento_" + anio + ".xls";
-
-  if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveOrOpenBlob(blob, filename);
-  } else {
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  // Load ExcelJS dynamically from CDN if not present
+  function loadExcelJSScript() {
+    return new Promise((resolve, reject) => {
+      if (window.ExcelJS) return resolve();
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js";
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error("Failed to load ExcelJS"));
+      document.head.appendChild(s);
+    });
   }
+
+  function fallbackHtmlXls() {
+    const style = `
+      <style>
+        table { border-collapse: collapse; }
+        table, th, td { border: 1px solid #000; }
+        th { font-weight: bold; background-color: #f2f2f2; text-align: center; }
+        td { padding: 4px; }
+      </style>
+    `;
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>${style}</head><body><table>${tabla.innerHTML}</table></body></html>`;
+    const blob = new Blob([html], { type: "application/vnd.ms-excel" });
+    const filename = "analisis_movimiento_" + anio + ".xls";
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
+  function exportWithExcelJS() {
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const ws = workbook.addWorksheet("Analisis Movimiento " + anio);
+
+      // Read rows from table
+      const trs = Array.from(tabla.querySelectorAll("tr"));
+      trs.forEach((tr, rowIndex) => {
+        const cells = Array.from(tr.children);
+        const rowValues = cells.map((td) => td.textContent.trim());
+        const row = ws.addRow(rowValues);
+
+        // Apply header style on first row
+        if (rowIndex === 0) {
+          row.font = { bold: true };
+          row.alignment = { vertical: "middle", horizontal: "center" };
+        }
+
+        // Apply border to each cell
+        row.eachCell({ includeEmpty: true }, (cell) => {
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          // Try to set numeric format if looks like number
+          const v = cell.value;
+          if (typeof v === "string") {
+            const num = v
+              .replace(/\./g, "")
+              .replace(/,/g, ".")
+              .replace(/[^0-9.-]/g, "");
+            if (num !== "" && !isNaN(Number(num))) {
+              cell.value = Number(num);
+              cell.numFmt = "#,##0.00";
+              cell.alignment = { horizontal: "right" };
+            }
+          }
+        });
+      });
+
+      // Adjust column widths
+      ws.columns.forEach((col) => {
+        let maxLength = 10;
+        col.eachCell({ includeEmpty: true }, (cell) => {
+          const text = cell.value ? String(cell.value) : "";
+          if (text.length > maxLength) maxLength = text.length;
+        });
+        col.width = Math.min(Math.max(maxLength + 2, 10), 40);
+      });
+
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        const blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const filename = "analisis_movimiento_" + anio + ".xlsx";
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    } catch (err) {
+      console.error("ExcelJS export failed:", err);
+      fallbackHtmlXls();
+    }
+  }
+
+  loadExcelJSScript()
+    .then(exportWithExcelJS)
+    .catch((err) => {
+      console.warn("Could not load ExcelJS, using HTML .xls fallback:", err);
+      fallbackHtmlXls();
+    });
 }
 
 // ========================
