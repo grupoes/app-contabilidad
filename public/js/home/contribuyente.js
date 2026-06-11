@@ -103,37 +103,12 @@ async function obtenerMovimientos() {
 function viewMovimientos(datos) {
   let html = "";
 
-  let total_ventas = 0;
-  let total_compras = 0;
   let ventas_gravadas = 0;
   let ventas_no_gravadas = 0;
   let compras_gravadas = 0;
   let compras_no_gravadas = 0;
 
   datos.forEach((mov) => {
-    total_ventas += parseFloat(mov.total_ventas);
-    total_compras += parseFloat(mov.total_compras);
-
-    /*let compras_gravadas = mov.compras_gravadas_decimal;
-    compras_gravadas = parseFloat(compras_gravadas.replace(/,/g, ""));
-
-    let importe_compras = mov.total_compras_decimal;
-
-    if (mov.igv == 0) {
-      let igv = compras_gravadas * 0.18;
-
-      importe_compras = parseFloat(importe_compras.replace(/,/g, ""));
-
-      importe_compras += igv;
-
-      importe_compras = importe_compras.toLocaleString("es-PE", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-
-      total_compras += igv;
-    }*/
-
     ventas_gravadas += parseFloat(
       mov.ventas_gravadas_decimal.replace(/,/g, ""),
     );
@@ -158,35 +133,25 @@ function viewMovimientos(datos) {
     `;
   });
 
-  total_ventas = total_ventas.toLocaleString("es-PE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-  total_compras = total_compras.toLocaleString("es-PE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
   html += `
     <tr>
       <td><strong>Total</strong></td>
-      <td>${ventas_gravadas.toLocaleString("es-PE", {
+      <td><strong>${ventas_gravadas.toLocaleString("es-PE", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}</td>
-      <td>${ventas_no_gravadas.toLocaleString("es-PE", {
+      })}</strong></td>
+      <td><strong>${ventas_no_gravadas.toLocaleString("es-PE", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}</td>
-      <td>${compras_gravadas.toLocaleString("es-PE", {
+      })}</strong></td>
+      <td><strong>${compras_gravadas.toLocaleString("es-PE", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}</td>
-      <td>${compras_no_gravadas.toLocaleString("es-PE", {
+      })}</strong></td>
+      <td><strong>${compras_no_gravadas.toLocaleString("es-PE", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}</td>
+      })}</strong></td>
     </tr>
   `;
 
