@@ -172,23 +172,30 @@ function descargarExcel() {
   // Load ExcelJS dynamically from CDN if not present
   function loadExcelJSScript() {
     return new Promise((resolve, reject) => {
-      if (window.ExcelJS && typeof window.ExcelJS.Workbook !== 'undefined') return resolve();
+      if (window.ExcelJS && typeof window.ExcelJS.Workbook !== "undefined")
+        return resolve();
       const urls = [
-        'https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js',
+        "https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js",
       ];
       let idx = 0;
 
       function tryLoad() {
-        if (window.ExcelJS && typeof window.ExcelJS.Workbook !== 'undefined') return resolve();
-        if (idx >= urls.length) return reject(new Error('Failed to load ExcelJS from CDNs'));
+        if (window.ExcelJS && typeof window.ExcelJS.Workbook !== "undefined")
+          return resolve();
+        if (idx >= urls.length)
+          return reject(new Error("Failed to load ExcelJS from CDNs"));
 
-        const s = document.createElement('script');
+        const s = document.createElement("script");
         s.src = urls[idx++];
         s.onload = () => {
           // allow UMD to attach
           setTimeout(() => {
-            if (window.ExcelJS && typeof window.ExcelJS.Workbook !== 'undefined') return resolve();
+            if (
+              window.ExcelJS &&
+              typeof window.ExcelJS.Workbook !== "undefined"
+            )
+              return resolve();
             tryLoad();
           }, 100);
         };
@@ -232,6 +239,7 @@ function descargarExcel() {
 
       // Read rows from table
       const trs = Array.from(tabla.querySelectorAll("tr"));
+      const lastRowIndex = trs.length - 1;
       trs.forEach((tr, rowIndex) => {
         const cells = Array.from(tr.children);
         const rowValues = cells.map((td) => td.textContent.trim());
@@ -290,24 +298,29 @@ function descargarExcel() {
         col.width = Math.min(Math.max(maxLength + 2, 10), 40);
       });
 
-      workbook.xlsx.writeBuffer().then((buffer) => {
-        const blob = new Blob([buffer], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      workbook.xlsx
+        .writeBuffer()
+        .then((buffer) => {
+          const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          const filename = "analisis_movimiento_" + anio + ".xlsx";
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch((err) => {
+          console.error("writeBuffer failed:", err);
+          fallbackHtmlXls();
         });
-        const filename = "analisis_movimiento_" + anio + ".xlsx";
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
     } catch (err) {
       console.error("ExcelJS export failed:", err);
       fallbackHtmlXls();
     }
   }
-            workbook.xlsx.writeBuffer().then((buffer) => {
   loadExcelJSScript()
     .then(exportWithExcelJS)
     .catch((err) => {
@@ -318,10 +331,6 @@ function descargarExcel() {
 
 // ========================
 // Lanzar modal al cargar
-            }).catch((err) => {
-                console.error('writeBuffer failed:', err);
-                fallbackHtmlXls();
-            });
 // ========================
 document.addEventListener("DOMContentLoaded", () => {
   verifyCorreo();
