@@ -172,12 +172,31 @@ function descargarExcel() {
   // Load ExcelJS dynamically from CDN if not present
   function loadExcelJSScript() {
     return new Promise((resolve, reject) => {
-      if (window.ExcelJS) return resolve();
-      const s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js";
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error("Failed to load ExcelJS"));
-      document.head.appendChild(s);
+      if (window.ExcelJS && typeof window.ExcelJS.Workbook !== 'undefined') return resolve();
+      const urls = [
+        'https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js',
+      ];
+      let idx = 0;
+
+      function tryLoad() {
+        if (window.ExcelJS && typeof window.ExcelJS.Workbook !== 'undefined') return resolve();
+        if (idx >= urls.length) return reject(new Error('Failed to load ExcelJS from CDNs'));
+
+        const s = document.createElement('script');
+        s.src = urls[idx++];
+        s.onload = () => {
+          // allow UMD to attach
+          setTimeout(() => {
+            if (window.ExcelJS && typeof window.ExcelJS.Workbook !== 'undefined') return resolve();
+            tryLoad();
+          }, 100);
+        };
+        s.onerror = () => tryLoad();
+        document.head.appendChild(s);
+      }
+
+      tryLoad();
     });
   }
 
@@ -288,7 +307,7 @@ function descargarExcel() {
       fallbackHtmlXls();
     }
   }
-
+            workbook.xlsx.writeBuffer().then((buffer) => {
   loadExcelJSScript()
     .then(exportWithExcelJS)
     .catch((err) => {
@@ -299,6 +318,10 @@ function descargarExcel() {
 
 // ========================
 // Lanzar modal al cargar
+            }).catch((err) => {
+                console.error('writeBuffer failed:', err);
+                fallbackHtmlXls();
+            });
 // ========================
 document.addEventListener("DOMContentLoaded", () => {
   verifyCorreo();
