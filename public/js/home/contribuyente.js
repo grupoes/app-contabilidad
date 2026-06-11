@@ -243,6 +243,29 @@ function descargarExcel() {
       const trs = Array.from(tabla.querySelectorAll("tr"));
       const lastRowIndex = trs.length - 1;
 
+      function parseExcelNumber(text) {
+        const value = text.trim();
+        if (value === "") return NaN;
+        const hasDot = value.indexOf(".") !== -1;
+        const hasComma = value.indexOf(",") !== -1;
+
+        let normalized = value;
+        if (hasDot && hasComma) {
+          const lastDot = value.lastIndexOf(".");
+          const lastComma = value.lastIndexOf(",");
+          if (lastComma > lastDot) {
+            normalized = value.replace(/\./g, "").replace(",", ".");
+          } else {
+            normalized = value.replace(/,/g, "");
+          }
+        } else if (hasComma) {
+          normalized = value.replace(/,/g, ".");
+        }
+
+        normalized = normalized.replace(/[^0-9.-]/g, "");
+        return normalized === "" ? NaN : Number(normalized);
+      }
+
       trs.forEach((tr, rowIndex) => {
         const cells = Array.from(tr.children);
         const rowValues = cells.map((td) => td.textContent.trim());
@@ -271,12 +294,9 @@ function descargarExcel() {
           }
 
           if (typeof cell.value === "string") {
-            const raw = cell.value
-              .replace(/\./g, "")
-              .replace(/,/g, ".")
-              .replace(/[^0-9.-]/g, "");
-            if (raw !== "" && !isNaN(Number(raw))) {
-              cell.value = Number(raw);
+            const numericValue = parseExcelNumber(cell.value);
+            if (!isNaN(numericValue)) {
+              cell.value = numericValue;
               cell.numFmt = "#,##0.00";
               cell.alignment = { horizontal: "right" };
             }
