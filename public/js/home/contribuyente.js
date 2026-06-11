@@ -188,6 +188,7 @@ function descargarExcel() {
         table, th, td { border: 1px solid #000; }
         th { font-weight: bold; background-color: #f2f2f2; text-align: center; }
         td { padding: 4px; }
+        tr:last-child td { font-weight: bold; background-color: #f9f9f9; }
       </style>
     `;
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>${style}</head><body><table>${tabla.innerHTML}</table></body></html>`;
