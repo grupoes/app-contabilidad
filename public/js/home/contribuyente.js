@@ -169,10 +169,48 @@ function descargarExcel() {
   let anio = year.options[year.selectedIndex].text;
 
   let tabla = document.getElementById("tableAnalisisMovimientos");
-  let wb = XLSX.utils.table_to_book(tabla, {
-    sheet: "Analisis Movimiento " + anio,
-  });
+  // Convert table to sheet
+  const ws = XLSX.utils.table_to_sheet(tabla, { raw: false, cellDates: true });
 
+  // Apply styles: bold header and thin border for all cells
+  if (ws && ws["!ref"]) {
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+
+    // Style header row (first row)
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const headerCell = XLSX.utils.encode_cell({ r: range.s.r, c: C });
+      ws[headerCell] = ws[headerCell] || { v: "" };
+      ws[headerCell].s = ws[headerCell].s || {};
+      ws[headerCell].s.font = Object.assign({}, ws[headerCell].s.font, {
+        bold: true,
+      });
+      ws[headerCell].s.alignment = { horizontal: "center", vertical: "center" };
+      ws[headerCell].s.border = {
+        top: { style: "thin", color: { rgb: "000000" } },
+        bottom: { style: "thin", color: { rgb: "000000" } },
+        left: { style: "thin", color: { rgb: "000000" } },
+        right: { style: "thin", color: { rgb: "000000" } },
+      };
+    }
+
+    // Apply border to all cells to make the table boxed
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const addr = XLSX.utils.encode_cell({ r: R, c: C });
+        ws[addr] = ws[addr] || { v: "" };
+        ws[addr].s = ws[addr].s || {};
+        ws[addr].s.border = ws[addr].s.border || {
+          top: { style: "thin", color: { rgb: "000000" } },
+          bottom: { style: "thin", color: { rgb: "000000" } },
+          left: { style: "thin", color: { rgb: "000000" } },
+          right: { style: "thin", color: { rgb: "000000" } },
+        };
+      }
+    }
+  }
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Analisis Movimiento " + anio);
   XLSX.writeFile(wb, "analisis_movimiento_" + anio + ".xlsx");
 }
 
