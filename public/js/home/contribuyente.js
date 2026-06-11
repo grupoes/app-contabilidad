@@ -242,6 +242,19 @@ function descargarExcel() {
             if (num !== "" && !isNaN(Number(num))) {
               cell.value = Number(num);
               cell.numFmt = "#,##0.00";
+              // Ensure header and last row cells are bold
+              if (rowIndex === 0) {
+                cell.font = Object.assign({}, cell.font, { bold: true });
+              }
+              if (rowIndex === lastRowIndex) {
+                cell.font = Object.assign({}, cell.font, { bold: true });
+                // light fill for last row
+                cell.fill = cell.fill || {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "FFF9F9F9" },
+                };
+              }
               cell.alignment = { horizontal: "right" };
             }
           }
