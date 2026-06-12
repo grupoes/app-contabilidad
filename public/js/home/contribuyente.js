@@ -95,7 +95,7 @@ async function obtenerMovimientos() {
           document.getElementById("planilla").setAttribute("hidden", "hidden");
         }
       } else {
-        console.log("Año menor a 2026, ocultar columna Planilla");
+        console.log("Año menor a 2026, ocultar columna Planilla: ", year.value);
         // Si el año es menor a 2026, aseguramos ocultar la columna
         document.getElementById("planilla").setAttribute("hidden", "hidden");
       }
