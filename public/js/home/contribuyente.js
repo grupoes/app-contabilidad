@@ -88,6 +88,7 @@ async function obtenerMovimientos() {
 
     if (data.data.length != 0) {
       if (Number(year.value) >= 2026) {
+        console.log("Año 2026 o superior, verificar AFP:", data.afp);
         if (data.afp === "si") {
           document.getElementById("planilla").removeAttribute("hidden");
         } else {
