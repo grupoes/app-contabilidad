@@ -86,6 +86,8 @@ async function obtenerMovimientos() {
 
     const data = await res.json();
 
+    console.log(data);
+
     if (data.data.length != 0) {
       if (Number(year.value) >= 12) {
         if (data.afp === "si") {
