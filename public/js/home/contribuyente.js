@@ -90,7 +90,17 @@ async function obtenerMovimientos() {
 
     console.log(data);
 
-    if (data.data.length != 0) {
+    if (data.status === "error") {
+      alert("Error: " + (data.message || "Error desconocido en la consulta"));
+      tableMovimientos.innerHTML = `
+      <tr>
+        <td colspan="6" class="text-center text-danger">Error al cargar datos</td>
+      </tr>
+      `;
+      return;
+    }
+
+    if (data.data && data.data.length != 0) {
       if (Number(year.value) >= 12) {
         if (data.afp === "si") {
           document.getElementById("planilla").removeAttribute("hidden");
