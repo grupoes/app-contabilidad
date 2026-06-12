@@ -473,6 +473,7 @@ class Home extends BaseController
             return $this->response->setJSON([
                 'status' => 'success',
                 'message' => 'consulta obtenida correctamente',
+                'afp' => $data['afp'],
                 'data' => $data['data']
             ]);
         } catch (\Exception $e) {
