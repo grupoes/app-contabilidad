@@ -115,7 +115,7 @@ async function obtenerMovimientos() {
         document.getElementById("planilla").setAttribute("hidden", "hidden");
       }
 
-      viewMovimientos(data.data, data.afp);
+      viewMovimientos(data.data, data.afp, mostrarPlanilla);
     } else {
       const yearNum = Number(year.value);
       const cols = yearNum >= 12 && data.afp === "si" ? 6 : 5;
@@ -130,7 +130,7 @@ async function obtenerMovimientos() {
   }
 }
 
-function viewMovimientos(datos, afp) {
+function viewMovimientos(datos, afp, mostrarPlanilla) {
   let html = "";
 
   let ventas_gravadas = 0;
@@ -152,7 +152,7 @@ function viewMovimientos(datos, afp) {
     compras_no_gravadas += parseFloat(
       mov.compras_no_gravadas_decimal.replace(/,/g, ""),
     );
-    if (afp === "si" && mov.total_r1) {
+    if (mostrarPlanilla && afp === "si" && mov.total_r1) {
       total_r1 += parseFloat(String(mov.total_r1).replace(/,/g, "")) || 0;
     }
 
@@ -163,7 +163,7 @@ function viewMovimientos(datos, afp) {
       <td>${mov.ventas_no_gravadas_decimal}</td>
       <td>${mov.compras_gravadas_decimal}</td>
       <td>${mov.compras_no_gravadas_decimal}</td>
-      ${afp === "si" ? `<td>${mov.total_r1}</td>` : ""}
+      ${mostrarPlanilla && afp === "si" ? `<td>${mov.total_r1}</td>` : ""}
     </tr>
     `;
   });
@@ -187,7 +187,7 @@ function viewMovimientos(datos, afp) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}</strong></td>
-      ${afp === "si" ? `<td><strong>${total_r1.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>` : ""}
+      ${mostrarPlanilla && afp === "si" ? `<td><strong>${total_r1.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>` : ""}
     </tr>
   `;
 
