@@ -183,31 +183,21 @@ year.addEventListener("change", () => {
   obtenerMovimientos();
 });
 
-async function descargarExcel() {
-  const ruc_empresa = document.getElementById("numero_doc").value;
-  const response = await fetch(`${url_servidor}descargar-excel`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ anio: 2025, ruc: ruc_empresa }),
-  });
-
-  if (!response.ok) {
-    const err = await response.json();
-    alert("Error: " + err.message);
+function descargarExcel() {
+  const numeroDoc = document.getElementById("numero_doc");
+  if (!year.value) {
+    alert("Seleccione un año antes de descargar.");
+    return;
+  }
+  if (!numeroDoc || !numeroDoc.value) {
+    alert("No se encontró el RUC/ID de documento.");
     return;
   }
 
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "reporte_" + ruc_empresa + "_2026.xlsx";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  window.URL.revokeObjectURL(url);
+  const url = `${url_servidor}api/descargar-excel/${encodeURIComponent(
+    year.value,
+  )}/${encodeURIComponent(numeroDoc.value)}`;
+  window.open(url, "_blank");
 }
 
 // ========================
