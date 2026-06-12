@@ -75,6 +75,8 @@ async function obtenerAnios() {
 async function obtenerMovimientos() {
   if (!year.value) return;
 
+  console.log("Obteniendo movimientos para el año:", year.value);
+
   try {
     const res = await fetch(
       `${base_url}obtener-analisis-movimientos/${year.value}`,
