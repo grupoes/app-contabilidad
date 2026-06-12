@@ -189,7 +189,6 @@ async function descargarExcel() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
     },
     body: JSON.stringify({ anio: 2025, ruc: ruc_empresa }),
   });
