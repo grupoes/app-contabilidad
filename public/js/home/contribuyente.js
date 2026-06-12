@@ -101,20 +101,24 @@ async function obtenerMovimientos() {
     }
 
     if (data.data && data.data.length != 0) {
-      if (Number(year.value) >= 12) {
+      const yearNum = Number(year.value);
+      const mostrarPlanilla = yearNum >= 12;
+
+      if (mostrarPlanilla) {
         if (data.afp === "si") {
           document.getElementById("planilla").removeAttribute("hidden");
         } else {
           document.getElementById("planilla").setAttribute("hidden", "hidden");
         }
       } else {
-        // Si el año es menor a 2026, aseguramos ocultar la columna
+        // Si el año es menor a 12, ocultar la columna Planilla
         document.getElementById("planilla").setAttribute("hidden", "hidden");
       }
 
       viewMovimientos(data.data, data.afp);
     } else {
-      const cols = Number(year.value) >= 2026 && data.afp === "si" ? 6 : 5;
+      const yearNum = Number(year.value);
+      const cols = yearNum >= 12 && data.afp === "si" ? 6 : 5;
       tableMovimientos.innerHTML = `
       <tr>
         <td colspan="${cols}" class="text-center">No hay Resultados</td>
