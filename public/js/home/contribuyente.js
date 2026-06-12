@@ -87,17 +87,13 @@ async function obtenerMovimientos() {
     const data = await res.json();
 
     if (data.data.length != 0) {
-      if (Number(year.value) >= 2026) {
-        console.log("Año 2026 o superior, verificar AFP:", data.afp);
+      if (Number(year.value) >= 12) {
         if (data.afp === "si") {
           document.getElementById("planilla").removeAttribute("hidden");
         } else {
           document.getElementById("planilla").setAttribute("hidden", "hidden");
         }
       } else {
-        console.log(
-          "Año menor a 2026, ocultar columna Planilla: " + year.value,
-        );
         // Si el año es menor a 2026, aseguramos ocultar la columna
         document.getElementById("planilla").setAttribute("hidden", "hidden");
       }
