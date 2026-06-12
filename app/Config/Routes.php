@@ -47,6 +47,8 @@ $routes->post('/change-password', 'Auth::changePassword');
 
 $routes->get('/obtener-analisis-movimientos/(:num)', 'Home::obtenerAnalisisMovimientos/$1');
 
+$routes->get('/descargar-excel/(:num)', 'Home::descargarExcel/$1');
+
 $routes->get('/administrador-archivos', 'FileManager::index');
 $routes->get('/folders-months', 'FileManager::listFoldersMonths');
 $routes->get('/filemanager/verify-year', 'FileManager::verifyYear');

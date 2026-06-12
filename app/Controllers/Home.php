@@ -572,4 +572,49 @@ class Home extends BaseController
             ]);
         }
     }
+
+    public function descargarExcel($year)
+    {
+        try {
+            $ruc = session()->get('user')['username'];
+
+            $client = \Config\Services::curlrequest();
+
+            $url = getenv('URL_SERVIDOR') . 'descargar-excel';
+
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => "Bearer " . session()->get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'http_errors' => false,
+                'json' => [
+                    'ruc' => $ruc,
+                    'anio' => $year
+                ]
+            ]);
+
+            // 👀 SI TOKEN EXPIRÓ
+            if ($response->getStatusCode() === 401) {
+                session()->destroy();
+                return redirect()->to(base_url())->send();
+                exit;
+            }
+
+            $data = json_decode($response->getBody(), true);
+
+            if (!$data || empty($data['status']) || empty($data['file_content']) || empty($data['file_name'])) {
+                return redirect()->back()->with('error', 'No se pudo descargar el archivo Excel');
+            }
+
+            $fileContent = base64_decode($data['file_content']);
+            $fileName = $data['file_name'];
+
+            return $this->response->setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                ->setHeader('Content-Disposition', 'attachment; filename="' . $fileName . '"')
+                ->setBody($fileContent);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al descargar el archivo Excel: ' . $e->getMessage());
+        }
+    }
 }

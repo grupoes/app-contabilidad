@@ -183,184 +183,32 @@ year.addEventListener("change", () => {
   obtenerMovimientos();
 });
 
-function descargarExcel() {
-  const anio = year.options[year.selectedIndex].text;
-  const tabla = document.getElementById("tableAnalisisMovimientos");
+async function descargarExcel() {
+  const ruc_empresa = document.getElementById("numero_doc").value;
+  const response = await fetch(`${url_servidor}descargar-excel`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify({ anio: 2025, ruc: ruc_empresa }),
+  });
 
-  function loadExcelJSScript() {
-    return new Promise((resolve, reject) => {
-      if (window.ExcelJS && typeof window.ExcelJS.Workbook !== "undefined") {
-        return resolve();
-      }
-
-      const urls = [
-        "https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js",
-      ];
-      let idx = 0;
-
-      function tryLoad() {
-        if (window.ExcelJS && typeof window.ExcelJS.Workbook !== "undefined") {
-          return resolve();
-        }
-        if (idx >= urls.length) {
-          return reject(new Error("Failed to load ExcelJS from CDNs"));
-        }
-
-        const s = document.createElement("script");
-        s.src = urls[idx++];
-        s.onload = () => {
-          setTimeout(() => {
-            if (
-              window.ExcelJS &&
-              typeof window.ExcelJS.Workbook !== "undefined"
-            ) {
-              return resolve();
-            }
-            tryLoad();
-          }, 100);
-        };
-        s.onerror = tryLoad;
-        document.head.appendChild(s);
-      }
-
-      tryLoad();
-    });
+  if (!response.ok) {
+    const err = await response.json();
+    alert("Error: " + err.message);
+    return;
   }
 
-  function fallbackHtmlXls() {
-    const style = `
-      <style>
-        table { border-collapse: collapse; }
-        table, th, td { border: 1px solid #000; }
-        th { font-weight: bold; background-color: #f2f2f2; text-align: center; }
-        td { padding: 4px; }
-        tr:last-child td { font-weight: bold; background-color: #f9f9f9; }
-      </style>
-    `;
-    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>${style}</head><body><table>${tabla.innerHTML}</table></body></html>`;
-    const blob = new Blob([html], { type: "application/vnd.ms-excel" });
-    const filename = "analisis_movimiento_" + anio + ".xls";
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, filename);
-    } else {
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-
-  function exportWithExcelJS() {
-    try {
-      const workbook = new ExcelJS.Workbook();
-      const ws = workbook.addWorksheet("Analisis Movimiento " + anio);
-
-      const trs = Array.from(tabla.querySelectorAll("tr"));
-      const lastRowIndex = trs.length - 1;
-
-      function parseExcelNumber(text) {
-        const value = text.trim();
-        if (value === "") return NaN;
-        const hasDot = value.indexOf(".") !== -1;
-        const hasComma = value.indexOf(",") !== -1;
-
-        let normalized = value;
-        if (hasDot && hasComma) {
-          const lastDot = value.lastIndexOf(".");
-          const lastComma = value.lastIndexOf(",");
-          if (lastComma > lastDot) {
-            normalized = value.replace(/\./g, "").replace(",", ".");
-          } else {
-            normalized = value.replace(/,/g, "");
-          }
-        } else if (hasComma) {
-          normalized = value.replace(/,/g, ".");
-        }
-
-        normalized = normalized.replace(/[^0-9.-]/g, "");
-        return normalized === "" ? NaN : Number(normalized);
-      }
-
-      trs.forEach((tr, rowIndex) => {
-        const cells = Array.from(tr.children);
-        const rowValues = cells.map((td) => td.textContent.trim());
-        const row = ws.addRow(rowValues);
-
-        row.eachCell({ includeEmpty: true }, (cell) => {
-          cell.border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" },
-          };
-
-          if (rowIndex === 0 || rowIndex === lastRowIndex) {
-            cell.font = Object.assign({}, cell.font, { bold: true });
-          }
-          if (rowIndex === 0) {
-            cell.alignment = { vertical: "middle", horizontal: "center" };
-          }
-          if (rowIndex === lastRowIndex) {
-            cell.fill = {
-              type: "pattern",
-              pattern: "solid",
-              fgColor: { argb: "FFF9F9F9" },
-            };
-          }
-
-          if (typeof cell.value === "string") {
-            const numericValue = parseExcelNumber(cell.value);
-            if (!isNaN(numericValue)) {
-              cell.value = numericValue;
-              cell.numFmt = "#,##0.00";
-              cell.alignment = { horizontal: "right" };
-            }
-          }
-        });
-      });
-
-      ws.columns.forEach((col) => {
-        let maxLength = 10;
-        col.eachCell({ includeEmpty: true }, (cell) => {
-          const text = cell.value ? String(cell.value) : "";
-          if (text.length > maxLength) maxLength = text.length;
-        });
-        col.width = Math.min(Math.max(maxLength + 2, 10), 40);
-      });
-
-      workbook.xlsx
-        .writeBuffer()
-        .then((buffer) => {
-          const blob = new Blob([buffer], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          });
-          const filename = "analisis_movimiento_" + anio + ".xlsx";
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(blob);
-          link.download = filename;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        })
-        .catch((err) => {
-          console.error("writeBuffer failed:", err);
-          fallbackHtmlXls();
-        });
-    } catch (err) {
-      console.error("ExcelJS export failed:", err);
-      fallbackHtmlXls();
-    }
-  }
-
-  loadExcelJSScript()
-    .then(exportWithExcelJS)
-    .catch((err) => {
-      console.warn("Could not load ExcelJS, using HTML .xls fallback:", err);
-      fallbackHtmlXls();
-    });
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "reporte_" + ruc_empresa + "_2026.xlsx";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
 }
 
 // ========================
