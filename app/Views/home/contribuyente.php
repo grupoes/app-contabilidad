@@ -87,6 +87,7 @@
                             <th>Ventas No Gravadas</th>
                             <th>Compras Gravadas</th>
                             <th>Compras No Gravadas</th>
+                            <th id="planilla" hidden>Planilla</th>
                         </tr>
                     </thead>
                     <tbody id="tableMovimientos">
@@ -129,5 +130,5 @@
 <script src="<?= base_url() ?>assets/plugins/notifications/js/lobibox.min.js"></script>
 <script src="<?= base_url() ?>assets/plugins/notifications/js/notifications.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script src="<?= base_url() ?>js/home/contribuyente.js?v=1"></script>
+<script src="<?= base_url() ?>js/home/contribuyente.js?v=2"></script>
 <?= $this->endSection() ?>

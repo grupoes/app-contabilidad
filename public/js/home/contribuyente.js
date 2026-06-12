@@ -87,11 +87,23 @@ async function obtenerMovimientos() {
     const data = await res.json();
 
     if (data.data.length != 0) {
-      viewMovimientos(data.data);
+      if (Number(year.value) >= 2026) {
+        if (data.afp === "si") {
+          document.getElementById("planilla").removeAttribute("hidden");
+        } else {
+          document.getElementById("planilla").setAttribute("hidden", "hidden");
+        }
+      } else {
+        // Si el año es menor a 2026, aseguramos ocultar la columna
+        document.getElementById("planilla").setAttribute("hidden", "hidden");
+      }
+
+      viewMovimientos(data.data, data.afp);
     } else {
+      const cols = Number(year.value) >= 2026 && data.afp === "si" ? 6 : 5;
       tableMovimientos.innerHTML = `
       <tr>
-        <td colspan="7" class="text-center">No hay Resultados</td>
+        <td colspan="${cols}" class="text-center">No hay Resultados</td>
       </tr>
       `;
     }
@@ -100,13 +112,14 @@ async function obtenerMovimientos() {
   }
 }
 
-function viewMovimientos(datos) {
+function viewMovimientos(datos, afp) {
   let html = "";
 
   let ventas_gravadas = 0;
   let ventas_no_gravadas = 0;
   let compras_gravadas = 0;
   let compras_no_gravadas = 0;
+  let total_r1 = 0;
 
   datos.forEach((mov) => {
     ventas_gravadas += parseFloat(
@@ -121,6 +134,9 @@ function viewMovimientos(datos) {
     compras_no_gravadas += parseFloat(
       mov.compras_no_gravadas_decimal.replace(/,/g, ""),
     );
+    if (afp === "si" && mov.total_r1) {
+      total_r1 += parseFloat(String(mov.total_r1).replace(/,/g, "")) || 0;
+    }
 
     html += `
     <tr>
@@ -129,6 +145,7 @@ function viewMovimientos(datos) {
       <td>${mov.ventas_no_gravadas_decimal}</td>
       <td>${mov.compras_gravadas_decimal}</td>
       <td>${mov.compras_no_gravadas_decimal}</td>
+      ${afp === "si" ? `<td>${mov.total_r1}</td>` : ""}
     </tr>
     `;
   });
@@ -152,6 +169,7 @@ function viewMovimientos(datos) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}</strong></td>
+      ${afp === "si" ? `<td><strong>${total_r1.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>` : ""}
     </tr>
   `;
 
