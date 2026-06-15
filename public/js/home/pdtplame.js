@@ -121,7 +121,10 @@ function viewPdtPlame(data) {
                 <div class="detail-info detail-job">
                     <h6 class="fw-bold mb-1 nombre_trabajador">${bol.nombres}</h6>
                     <h6 class="numero_documento">${bol.numero_documento}</h6>
-                    <a href="${url_servidor}api/descargar-boleta/${bol.id}/${numero_doc.value}" class="mb-0" target="_blank">Descargar</a>
+                    <div class="d-flex gap-3">
+                        <a href="${url_servidor}api/descargar-boleta/${bol.id}/${numero_doc.value}" class="mb-0" target="_blank">Descargar</a>
+                        <a href="${base_url}previsualizar-boleta/${bol.id}" class="mb-0" target="_blank">Previsualizar</a>
+                    </div>
                 </div>
             </div>
         </div>
