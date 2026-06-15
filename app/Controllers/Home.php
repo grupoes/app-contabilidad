@@ -206,51 +206,6 @@ class Home extends BaseController
             ->setBody($fileContent);
     }
 
-    public function previsualizarBoleta($boletaId)
-    {
-        if (!session()->get('logged_in')) {
-            return redirect()->to(base_url('/'));
-        }
-
-        $usuario = session()->get('user')['username'];
-
-        $client = \Config\Services::curlrequest();
-
-        $url = getenv('URL_SERVIDOR') . 'descargar_boleta';
-
-        $response = $client->post($url, [
-            'headers' => [
-                'Authorization' => "Bearer " . session()->get('token'),
-                'Accept' => 'application/json'
-            ],
-            'http_errors' => false,
-            'json' => [
-                'usuario' => $usuario,
-                'boleta_id' => $boletaId
-            ]
-        ]);
-
-        // 👀 SI TOKEN EXPIRÓ
-        if ($response->getStatusCode() === 401) {
-            session()->destroy();
-            return redirect()->to(base_url())->send();
-            exit;
-        }
-
-        $data = json_decode($response->getBody(), true);
-
-        if (!$data || empty($data['status']) || empty($data['file_content']) || empty($data['file_name'])) {
-            return redirect()->back()->with('error', 'No se pudo previsualizar la boleta');
-        }
-
-        $fileContent = base64_decode($data['file_content']);
-        $fileName = $data['file_name'];
-
-        return $this->response->setHeader('Content-Type', 'application/pdf')
-            ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
-            ->setBody($fileContent);
-    }
-
     public function pdtRenta()
     {
         if (!session()->get('logged_in')) {
