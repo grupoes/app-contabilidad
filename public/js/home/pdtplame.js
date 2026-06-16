@@ -130,7 +130,7 @@ function viewPdtPlame(data) {
                     <h6 class="fw-bold mb-1 nombre_trabajador">${bol.nombres}</h6>
                     <h6 class="numero_documento">${bol.numero_documento}</h6>
                     <div class="d-flex gap-3">
-                        <a href="${url_servidor}api/descargar-boleta/${bol.id}/${numero_doc.value}" class="mb-0" ${hidden_descargar_boleta} target="_blank">Descargar</a>
+                        <a href="${url_servidor}api/descargar-boleta/${bol.id}/${numero_doc.value}" class="mb-0" ${hidden_descargar_boleta} target="_blank">Descargar con sello</a>
                         <a href="${url_servidor}archivos/pdt/${bol.nameFile}" class="mb-0" target="_blank">Previsualizar</a>
                     </div>
                 </div>
